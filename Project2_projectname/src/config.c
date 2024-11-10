@@ -1,15 +1,16 @@
-#include "http.h"
+#include "config.h"
+#include <stdio.h>
+#include <string.h>
 
-void parse_request(const char *buffer, HttpRequest *request) {
-    sscanf(buffer, "%s %s %s", request->method, request->path, request->version);
-}
+int load_config(const char *filename, ServerConfig *config) {
+    FILE *file = fopen(filename, "r");
+    if (!file) return -1;
 
-void respond(int client_fd, HttpRequest *request) {
-    if (strcmp(request->method, "GET") == 0 && strcmp(request->path, "/") == 0) {
-        char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<html><body><h1>Hello, World!</h1></body></html>";
-        send(client_fd, response, sizeof(response) - 1, 0);
-    } else {
-        char not_found[] = "HTTP/1.1 404 Not Found\r\n";
-        send(client_fd, not_found, sizeof(not_found) - 1, 0);
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        if (sscanf(line, "port=%d", &config->port) == 1) continue;
+        if (sscanf(line, "document_root=%s", config->document_root) == 1) continue;
     }
+    fclose(file);
+    return 0;
 }
