@@ -2,11 +2,13 @@
 #include "config.h"
 #include "logger.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     // Load configuration
     ServerConfig config;
-    if (load_config("config/server.conf", &config) != 0) {
-        fprintf(stderr, "Failed to load configuration.\n");
+    if (load_config("config/server.conf", &config) != 0)
+    {
+        fprintf(stderr, "Failed to load configuration file.\n");
         return 1;
     }
 
