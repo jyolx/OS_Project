@@ -16,5 +16,12 @@ typedef struct {
 
 void parse_request(const char *buffer, HttpRequest *request);
 void respond(int client_fd, HttpRequest *request);
+void handle_get_request(int client_fd, HttpRequest *request);
+void handle_post_request(int client_fd, HttpRequest *request);
+void handle_put_request(int client_fd, HttpRequest *request);
+void handle_delete_request(int client_fd, HttpRequest *request);
+void handle_unsupported_method(int client_fd);
+void send_404_response(int client_fd);
+void open_url_in_browser(const char *path);
 
 #endif

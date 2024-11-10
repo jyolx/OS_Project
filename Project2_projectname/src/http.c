@@ -2,6 +2,8 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/sendfile.h>
+#include <sys/socket.h>
+#include <stdlib.h>
 
 void parse_request(const char *buffer, HttpRequest *request) {
     // Parse the request line
@@ -48,22 +50,34 @@ void handle_get_request(int client_fd, HttpRequest *request) {
         send(client_fd, response, strlen(response), 0);
         sendfile(client_fd, file_fd, NULL, file_stat.st_size);
         close(file_fd);
+
+        // Open the URL in the default web browser
+        open_url_in_browser(request->path);
     }
 }
 
 void handle_post_request(int client_fd, HttpRequest *request) {
     char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nPOST request received";
     send(client_fd, response, sizeof(response) - 1, 0);
+
+    // Open the URL in the default web browser
+    open_url_in_browser(request->path);
 }
 
 void handle_put_request(int client_fd, HttpRequest *request) {
     char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nPUT request received";
     send(client_fd, response, sizeof(response) - 1, 0);
+
+    // Open the URL in the default web browser
+    open_url_in_browser(request->path);
 }
 
 void handle_delete_request(int client_fd, HttpRequest *request) {
     char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nDELETE request received";
     send(client_fd, response, sizeof(response) - 1, 0);
+
+    // Open the URL in the default web browser
+    open_url_in_browser(request->path);
 }
 
 void handle_unsupported_method(int client_fd) {
@@ -74,4 +88,25 @@ void handle_unsupported_method(int client_fd) {
 void send_404_response(int client_fd) {
     char not_found[] = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n<html><body><h1>404 Not Found</h1></body></html>";
     send(client_fd, not_found, sizeof(not_found) - 1, 0);
+}
+
+void open_url_in_browser(const char *path) {
+    char url[256];
+    snprintf(url, sizeof(url), "http://localhost:8080%s", path);
+
+    #if defined(_WIN32) || defined(_WIN64)
+        char command[512];
+        snprintf(command, sizeof(command), "start %s", url);
+        system(command);
+    #elif defined(__APPLE__) || defined(__MACH__)
+        char command[512];
+        snprintf(command, sizeof(command), "open %s", url);
+        system(command);
+    #elif defined(__linux__)
+        char command[512];
+        snprintf(command, sizeof(command), "xdg-open %s", url);
+        system(command);
+    #else
+        fprintf(stderr, "Unsupported OS\n");
+    #endif
 }
