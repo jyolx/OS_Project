@@ -1,4 +1,5 @@
 #include "http.h"
+#include <sys/socket.h>
 
 void parse_request(const char *buffer, HttpRequest *request) {
     sscanf(buffer, "%s %s %s", request->method, request->path, request->version);

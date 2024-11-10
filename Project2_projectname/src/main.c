@@ -19,5 +19,5 @@ int main(int argc, char *argv[])
     start_server(&config);
 
     return 0;
-}
+};
 

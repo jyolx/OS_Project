@@ -67,16 +67,6 @@ void destroy_queue(ClientQueue *q)
     log_statement("Queue has been destroyed.\n");
 };
 
-void *worker_thread(void *arg)
-{
-    while (1)
-    {
-        int client_fd = dequeue(&client_queue);
-        handle_client(client_fd);
-    }
-    return NULL;
-};
-
 void handle_client(int client_fd)
 {
     char buffer[1024];
@@ -93,8 +83,17 @@ void handle_client(int client_fd)
 
     log_request(&request);
     close(client_fd);
+};
+
+void *worker_thread(void *arg)
+{
+    while (1)
+    {
+        int client_fd = dequeue(&client_queue);
+        handle_client(client_fd);
+    }
     return NULL;
-}
+};
 
 void start_server(ServerConfig *config)
 {
