@@ -6,10 +6,9 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <unistd.h>
-#include <arpa/inet.h>
 
 typedef struct {
-    int *queue;
+    Client_details *queue;
     int front;
     int rear;
     int size;
@@ -22,7 +21,7 @@ ClientQueue client_queue;
 
 void init_queue(ClientQueue *q, int size)
 {
-    q->queue = (int *)malloc(size * sizeof(int));
+    q->queue = (Client_details *)malloc(size * sizeof(Client_details));
     q->front = 0;
     q->rear = 0;
     q->size = size;
@@ -31,31 +30,40 @@ void init_queue(ClientQueue *q, int size)
     sem_init(&q->spaces, 0, size);
 };
 
-void enqueue(ClientQueue *q, int client_fd)
+void enqueue(ClientQueue *q, int client_fd, char client_ip[], int client_port)
 {
     sem_wait(&q->spaces);
     sem_wait(&q->mutex);
-    q->queue[q->rear] = client_fd;
+    q->queue[q->rear].client_fd = client_fd;
+    strcpy(q->queue[q->rear].client_ip,client_ip);
+    q->queue[q->rear].client_port = client_port;
     q->rear = (q->rear + 1) % q->size;
     char log_message[64];
-    sprintf(log_message, "Client %d has been added to the queue.\n", client_fd);
+    sprintf(log_message, "Client %s:%d has been added to the queue.\n", client_ip,client_port);
     log_statement(log_message);
     sem_post(&q->mutex);
     sem_post(&q->items);
 };
 
-int dequeue(ClientQueue *q)
+Client_details* dequeue(ClientQueue *q)
 {
     sem_wait(&q->items);
     sem_wait(&q->mutex);
-    int client_fd = q->queue[q->front];
+
+    Client_details *client = (Client_details *)malloc(sizeof(Client_details));
+    client->client_fd = q->queue[q->front].client_fd;
+    strcpy(client->client_ip, q->queue[q->front].client_ip);
+    client->client_port = q->queue[q->front].client_port;
+
     q->front = (q->front + 1) % q->size;
+
     char log_message[64];
-    sprintf(log_message, "Client %d has been removed from the queue.\n", client_fd);
+    sprintf(log_message, "Client %s:%d has been removed from the queue.\n", client->client_ip, client->client_port);
     log_statement(log_message);
+
     sem_post(&q->mutex);
     sem_post(&q->spaces);
-    return client_fd;
+    return client;
 };
 
 void destroy_queue(ClientQueue *q)
@@ -67,30 +75,31 @@ void destroy_queue(ClientQueue *q)
     log_statement("Queue has been destroyed.\n");
 };
 
-void handle_client(int client_fd)
+void handle_client(Client_details* client)
 {
     char buffer[1024];
-    recv(client_fd, buffer, sizeof(buffer), 0);
+    recv(client->client_fd, buffer, sizeof(buffer), 0);
     
     HttpRequest request;
     parse_request(buffer, &request);
 
     if (authenticate_request(&request)) {
-        respond(client_fd, &request);
+        respond(client->client_fd, &request);
     } else {
-        send(client_fd, "HTTP/1.1 401 Unauthorized\r\n", 26, 0);
+        send(client->client_fd, "HTTP/1.1 401 Unauthorized\r\n", 26, 0);
     }
 
-    log_request(&request);
-    close(client_fd);
+    log_request(&request,client->client_ip,client->client_port);
+    close(client->client_fd);
+    free(client);
 };
 
 void *worker_thread(void *arg)
 {
     while (1)
     {
-        int client_fd = dequeue(&client_queue);
-        handle_client(client_fd);
+        Client_details* client = dequeue(&client_queue);
+        handle_client(client);
     }
     return NULL;
 };
@@ -106,7 +115,7 @@ void start_server(ServerConfig *config)
 
     struct sockaddr_in address;
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr(config->address);
+    address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(config->port);
 
     if(bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
@@ -137,14 +146,26 @@ void start_server(ServerConfig *config)
 
     while (1)
     {
-        int client_fd = accept(server_fd, NULL, NULL);
+        struct sockaddr_in client_address;
+        socklen_t client_len = sizeof(client_address);
+        int client_fd = accept(server_fd, (struct sockaddr *)&client_address, &client_len);
+
         if (client_fd < 0)
         {
             perror("accept failed");
             close(server_fd);
             exit(EXIT_FAILURE);
         }
-        enqueue(&client_queue, client_fd);
+
+        char client_ip[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &client_address.sin_addr, client_ip, INET_ADDRSTRLEN);
+        int client_port = ntohs(client_address.sin_port);
+
+        char log_message[128];
+        sprintf(log_message, "Accepted connection from %s:%d\n", client_ip, client_port);
+        log_statement(log_message);
+        
+        enqueue(&client_queue, client_fd, client_ip, client_port);
     }
 
     close(server_fd);
