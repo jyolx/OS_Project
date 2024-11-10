@@ -3,6 +3,8 @@
 
 typedef struct {
     int port;
+    char address[15];
+    int max_threads;
     char document_root[256];
 } ServerConfig;
 
