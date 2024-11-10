@@ -1,6 +1,29 @@
-Sun Nov 10 15:21:00 2024
- - GET /index.html HTTP/1.1
-Sun Nov 10 15:21:24 2024
- - GET /index.html HTTP/1.1
-Sun Nov 10 15:31:38 2024
- - GET /index.html HTTP/1.1
+[Sun Nov 10 19:33:45 2024
+] - Logger initialized
+[Sun Nov 10 19:33:45 2024
+] - Server started on @:8080
+
+[Sun Nov 10 19:33:48 2024
+] - Client 5 has been added to the queue.
+
+[Sun Nov 10 19:33:48 2024
+] - Client 5 has been removed from the queue.
+
+[Sun Nov 10 19:33:48 2024
+] - GET /index.html HTTP/1.1
+[Sun Nov 10 19:33:49 2024
+] - Client 6 has been added to the queue.
+
+[Sun Nov 10 19:33:49 2024
+] - Client 6 has been removed from the queue.
+
+[Sun Nov 10 19:33:49 2024
+] - GET /index.html HTTP/1.1
+[Sun Nov 10 19:33:49 2024
+] - Client 5 has been added to the queue.
+
+[Sun Nov 10 19:33:49 2024
+] - Client 5 has been removed from the queue.
+
+[Sun Nov 10 19:33:49 2024
+] - GET /index.html HTTP/1.1
