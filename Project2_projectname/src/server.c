@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <unistd.h>
+#include <signal.h>
 
 typedef struct {
     Client_details *queue;
@@ -100,9 +101,26 @@ void *worker_thread(void *arg)
     return NULL;
 };
 
+int server_fd;
+
+
+void shut_down(int signal)
+{
+    if (signal == SIGINT)
+    {
+        log_statement("Received signal to shut down server...");
+        close(server_fd);
+        destroy_queue(&client_queue);
+        log_statement("Server has been shut down.");
+        exit(EXIT_SUCCESS);
+    }
+};
+
 void start_server(ServerConfig *config)
 {
-    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    signal(SIGINT, shut_down);
+   
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0)
     {
         perror("socket failed");
@@ -172,7 +190,4 @@ void start_server(ServerConfig *config)
         
         enqueue(&client_queue, client_fd, client_ip, client_port);
     }
-
-    close(server_fd);
-    destroy_queue(&client_queue);
 };
