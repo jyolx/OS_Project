@@ -33,13 +33,16 @@ void enqueue(ClientQueue *q, int client_fd, char client_ip[], int client_port)
 {
     sem_wait(&q->spaces);
     sem_wait(&q->mutex);
+
     q->queue[q->rear].client_fd = client_fd;
     strcpy(q->queue[q->rear].client_ip,client_ip);
     q->queue[q->rear].client_port = client_port;
     q->rear = (q->rear + 1) % q->size;
+
     char log_message[64];
-    sprintf(log_message, "Client %s:%d has been added to the queue.\n", client_ip,client_port);
+    sprintf(log_message, "Client %s:%d has been added to the queue.", client_ip,client_port);
     log_statement(log_message);
+
     sem_post(&q->mutex);
     sem_post(&q->items);
 };
@@ -57,7 +60,7 @@ Client_details* dequeue(ClientQueue *q)
     q->front = (q->front + 1) % q->size;
 
     char log_message[64];
-    sprintf(log_message, "Client %s:%d has been removed from the queue.\n", client->client_ip, client->client_port);
+    sprintf(log_message, "Client %s:%d has been removed from the queue.", client->client_ip, client->client_port);
     log_statement(log_message);
 
     sem_post(&q->mutex);
@@ -78,8 +81,10 @@ void handle_client(Client_details* client)
 {
     char buffer[BUFFER_SIZE];
     recv(client->client_fd, buffer, sizeof(buffer), 0);
-    printf("%s\n", buffer);
+    //printf("%s\n", buffer);
+
     handle_request(client->client_fd, buffer, client->client_ip, client->client_port);
+    
     close(client->client_fd);
     free(client);
     client = NULL;
@@ -112,6 +117,7 @@ void start_server(ServerConfig *config)
         exit(EXIT_FAILURE);
     }
     */
+   
     struct sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
@@ -125,7 +131,7 @@ void start_server(ServerConfig *config)
     }
 
     char log_message[64];
-    sprintf(log_message, "Server started on %s:%d\n", config->address, config->port);
+    sprintf(log_message, "Server started on %s:%d", config->address, config->port);
     log_statement(log_message);
 
     if(listen(server_fd, 10) < 0)
@@ -161,7 +167,7 @@ void start_server(ServerConfig *config)
         int client_port = ntohs(client_address.sin_port);
 
         char log_message[128];
-        sprintf(log_message, "Accepted connection from %s:%d\n", client_ip, client_port);
+        sprintf(log_message, "Accepted connection from %s:%d", client_ip, client_port);
         log_statement(log_message);
         
         enqueue(&client_queue, client_fd, client_ip, client_port);

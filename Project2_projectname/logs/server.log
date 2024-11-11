@@ -1,14 +1,5 @@
-[Mon Nov 11 18:00:41 2024
-] - Logger initialized
-[Mon Nov 11 18:00:41 2024
-] - Server started on €	:8081
-
-[Mon Nov 11 18:00:48 2024
-] - Accepted connection from 127.0.0.1:39988
-
-[Mon Nov 11 18:00:48 2024
-] - Client 127.0.0.1:39988 has been added to the queue.
-
-[Mon Nov 11 18:00:48 2024
-] - Client 127.0.0.1:39988 has been removed from the queue.
-
+[Mon Nov 11 19:34:40 2024] - Logger initialized
+[Mon Nov 11 19:34:40 2024] - Server started on €	:8080
+[Mon Nov 11 19:34:47 2024] - Accepted connection from 127.0.0.1:48164
+[Mon Nov 11 19:34:47 2024] - Client 127.0.0.1:48164 has been added to the queue.
+[Mon Nov 11 19:34:47 2024] - Client 127.0.0.1:48164 has been removed from the queue.
