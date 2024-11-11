@@ -1,6 +1,5 @@
 #include "server.h"
 #include "http.h"
-#include "authentication.h"
 #include "logger.h"
 
 #include <pthread.h>
@@ -77,21 +76,13 @@ void destroy_queue(ClientQueue *q)
 
 void handle_client(Client_details* client)
 {
-    char buffer[1024];
+    char buffer[BUFFER_SIZE];
     recv(client->client_fd, buffer, sizeof(buffer), 0);
-    
-    HttpRequest request;
-    parse_request(buffer, &request);
-
-    if (authenticate_request(&request)) {
-        respond(client->client_fd, &request);
-    } else {
-        send(client->client_fd, "HTTP/1.1 401 Unauthorized\r\n", 26, 0);
-    }
-
-    log_request(&request,client->client_ip,client->client_port);
+    printf("%s\n", buffer);
+    handle_request(client->client_fd, buffer, client->client_ip, client->client_port);
     close(client->client_fd);
     free(client);
+    client = NULL;
 };
 
 void *worker_thread(void *arg)
@@ -113,13 +104,14 @@ void start_server(ServerConfig *config)
         exit(EXIT_FAILURE);
     }
 
+    /*
     // Allows reuse of the port
     int opt = 1;
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
-
+    */
     struct sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;

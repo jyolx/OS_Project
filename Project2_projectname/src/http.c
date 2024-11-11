@@ -1,94 +1,114 @@
 #include "http.h"
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/sendfile.h>
+#include "authentication.h"
 #include <sys/socket.h>
-#include <stdlib.h>
+#include <sys/stat.h>
 
-void parse_request(const char *buffer, HttpRequest *request) {
-    // Parse the request line
-    sscanf(buffer, "%s %s %s", request->method, request->path, request->version);
+#define DATA_DIR "data/" // Define the data directory
 
-    // Extract the body if the method is POST or PUT
-    if (strcmp(request->method, "POST") == 0 || strcmp(request->method, "PUT") == 0) {
-        const char *body = strstr(buffer, "\r\n\r\n");
-        if (body) {
-            strncpy(request->body, body + 4, sizeof(request->body) - 1);
+// Send an HTTP response to the client
+void send_response(int client_socket, const char *status, const char *body)
+{
+    char response[BUFFER_SIZE];
+    snprintf(response, BUFFER_SIZE,
+             "HTTP/1.1 %s\r\n"
+             "Content-Length: %ld\r\n"
+             "Content-Type: text/plain\r\n"
+             "\r\n%s", status, strlen(body), body);
+    send(client_socket, response, strlen(response), 0);
+}
+
+// Function to check if a file exists in the data directory
+int file_exists(const char *path)
+{
+    char full_path[1024];
+    snprintf(full_path, sizeof(full_path), DATA_DIR "%s", path);
+    struct stat buffer;
+    return (stat(full_path, &buffer) == 0);
+}
+
+// Handle different HTTP methods
+void handle_request(int client_socket, const char buffer[], const char client_ip[], int client_port)
+{
+    char method[10], path[1024];
+    sscanf(buffer, "%s %s", method, path);
+
+    // Check authorization if the path is secure
+    const char *auth_header = strstr(buffer, "Authorization: ");
+    if (strstr(path, "/secure") && !authenticate_request(auth_header ? auth_header + 15 : NULL))
+    {
+        send_response(client_socket, "401 Unauthorized", "Unauthorized");
+        return;
+    }
+
+    // Construct full file path with data directory
+    char full_path[1024];
+    snprintf(full_path, sizeof(full_path), DATA_DIR "%s", path + 1);  // Skip leading '/'
+
+    // Handle HTTP methods
+    if (strcmp(method, "GET") == 0) {
+        if (file_exists(path + 1)) {
+            FILE *file = fopen(full_path, "r");
+            if (file) {
+                fseek(file, 0, SEEK_END);
+                long file_size = ftell(file);
+                fseek(file, 0, SEEK_SET);
+                char *file_content = malloc(file_size + 1);
+                fread(file_content, 1, file_size, file);
+                fclose(file);
+                file_content[file_size] = '\0';
+
+                send_response(client_socket, "200 OK", file_content);
+                free(file_content);
+            } else {
+                send_response(client_socket, "500 Internal Server Error", "Unable to read file.");
+            }
+        } else {
+            send_response(client_socket, "404 Not Found", "Resource not found.");
         }
-    }
-}
-
-void respond(int client_fd, HttpRequest *request) {
-    if (strcmp(request->method, "GET") == 0) {
-        handle_get_request(client_fd, request);
-    } else if (strcmp(request->method, "POST") == 0) {
-        handle_post_request(client_fd, request);
-    } else if (strcmp(request->method, "PUT") == 0) {
-        handle_put_request(client_fd, request);
-    } else if (strcmp(request->method, "DELETE") == 0) {
-        handle_delete_request(client_fd, request);
+    } else if (strcmp(method, "POST") == 0) {
+        const char *data = strstr(buffer, "\r\n\r\n") + 4;
+        if (data) {
+            FILE *file = fopen(full_path, "w");
+            if (file) {
+                fwrite(data, 1, strlen(data), file);
+                fclose(file);
+                send_response(client_socket, "201 Created", "Resource created.");
+            } else {
+                send_response(client_socket, "500 Internal Server Error", "Unable to write to file.");
+            }
+        } else {
+            send_response(client_socket, "400 Bad Request", "No data provided in POST request.");
+        }
+    } else if (strcmp(method, "PUT") == 0) {
+        const char *data = strstr(buffer, "\r\n\r\n") + 4;
+        if (data) {
+            FILE *file = fopen(full_path, "w");
+            if (file) {
+                fwrite(data, 1, strlen(data), file);
+                fclose(file);
+                send_response(client_socket, "200 OK", "Resource updated.");
+            } else {
+                send_response(client_socket, "500 Internal Server Error", "Unable to write to file.");
+            }
+        } else {
+            send_response(client_socket, "400 Bad Request", "No data provided in PUT request.");
+        }
+    } else if (strcmp(method, "DELETE") == 0) {
+        if (file_exists(path + 1)) {
+            if (remove(full_path) == 0) {
+                send_response(client_socket, "200 OK", "Resource deleted.");
+            } else {
+                send_response(client_socket, "500 Internal Server Error", "Unable to delete file.");
+            }
+        } else {
+            send_response(client_socket, "404 Not Found", "Resource not found.");
+        }
     } else {
-        handle_unsupported_method(client_fd);
+        send_response(client_socket, "400 Bad Request", "Invalid HTTP method.");
     }
 }
 
-void handle_get_request(int client_fd, HttpRequest *request) {
-    char file_path[256];
-    snprintf(file_path, sizeof(file_path), "www%s", request->path);
-    if (strcmp(request->path, "/") == 0) {
-        strcpy(file_path, "www/index.html");
-    }
-
-    int file_fd = open(file_path, O_RDONLY);
-    if (file_fd < 0) {
-        send_404_response(client_fd);
-    } else {
-        struct stat file_stat;
-        fstat(file_fd, &file_stat);
-        char response[1024];
-        snprintf(response, sizeof(response), "HTTP/1.1 200 OK\r\nContent-Length: %ld\r\n\r\n", file_stat.st_size);
-        send(client_fd, response, strlen(response), 0);
-        sendfile(client_fd, file_fd, NULL, file_stat.st_size);
-        close(file_fd);
-
-        // Open the URL in the default web browser
-        open_url_in_browser(request->path);
-    }
-}
-
-void handle_post_request(int client_fd, HttpRequest *request) {
-    char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nPOST request received";
-    send(client_fd, response, sizeof(response) - 1, 0);
-
-    // Open the URL in the default web browser
-    open_url_in_browser(request->path);
-}
-
-void handle_put_request(int client_fd, HttpRequest *request) {
-    char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nPUT request received";
-    send(client_fd, response, sizeof(response) - 1, 0);
-
-    // Open the URL in the default web browser
-    open_url_in_browser(request->path);
-}
-
-void handle_delete_request(int client_fd, HttpRequest *request) {
-    char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nDELETE request received";
-    send(client_fd, response, sizeof(response) - 1, 0);
-
-    // Open the URL in the default web browser
-    open_url_in_browser(request->path);
-}
-
-void handle_unsupported_method(int client_fd) {
-    char not_implemented[] = "HTTP/1.1 501 Not Implemented\r\n";
-    send(client_fd, not_implemented, sizeof(not_implemented) - 1, 0);
-}
-
-void send_404_response(int client_fd) {
-    char not_found[] = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n<html><body><h1>404 Not Found</h1></body></html>";
-    send(client_fd, not_found, sizeof(not_found) - 1, 0);
-}
+/*
 
 void open_url_in_browser(const char *path) {
     char url[256];
@@ -110,3 +130,4 @@ void open_url_in_browser(const char *path) {
         fprintf(stderr, "Unsupported OS\n");
     #endif
 }
+*/
