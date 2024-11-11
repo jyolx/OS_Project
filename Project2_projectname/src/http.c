@@ -9,11 +9,13 @@
 void send_response(int client_socket, const char *status, const char *body)
 {
     char response[BUFFER_SIZE];
+
     snprintf(response, BUFFER_SIZE,
              "HTTP/1.1 %s\r\n"
              "Content-Length: %ld\r\n"
              "Content-Type: text/plain\r\n"
              "\r\n%s", status, strlen(body), body);
+
     send(client_socket, response, strlen(response), 0);
 }
 
@@ -45,10 +47,13 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
     snprintf(full_path, sizeof(full_path), DATA_DIR "%s", path + 1);  // Skip leading '/'
 
     // Handle HTTP methods
-    if (strcmp(method, "GET") == 0) {
-        if (file_exists(path + 1)) {
+    if (strcmp(method, "GET") == 0)
+    {
+        if (file_exists(path + 1))
+        {
             FILE *file = fopen(full_path, "r");
-            if (file) {
+            if (file)
+            {
                 fseek(file, 0, SEEK_END);
                 long file_size = ftell(file);
                 fseek(file, 0, SEEK_SET);
@@ -59,51 +64,81 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
 
                 send_response(client_socket, "200 OK", file_content);
                 free(file_content);
-            } else {
+            }
+            else
+            {
                 send_response(client_socket, "500 Internal Server Error", "Unable to read file.");
             }
-        } else {
+        }
+        else
+        {
             send_response(client_socket, "404 Not Found", "Resource not found.");
         }
-    } else if (strcmp(method, "POST") == 0) {
+    }
+    else if (strcmp(method, "POST") == 0)
+    {
         const char *data = strstr(buffer, "\r\n\r\n") + 4;
-        if (data) {
+        if (data)
+        {
             FILE *file = fopen(full_path, "w");
-            if (file) {
+            if (file)
+            {
                 fwrite(data, 1, strlen(data), file);
                 fclose(file);
                 send_response(client_socket, "201 Created", "Resource created.");
-            } else {
+            }
+            else
+            {
                 send_response(client_socket, "500 Internal Server Error", "Unable to write to file.");
             }
-        } else {
+        }
+        else
+        {
             send_response(client_socket, "400 Bad Request", "No data provided in POST request.");
         }
-    } else if (strcmp(method, "PUT") == 0) {
+    }
+    else if (strcmp(method, "PUT") == 0)
+    {
         const char *data = strstr(buffer, "\r\n\r\n") + 4;
-        if (data) {
+        if (data)
+        {
             FILE *file = fopen(full_path, "w");
-            if (file) {
+            if (file)
+            {
                 fwrite(data, 1, strlen(data), file);
                 fclose(file);
                 send_response(client_socket, "200 OK", "Resource updated.");
-            } else {
+            }
+            else
+            {
                 send_response(client_socket, "500 Internal Server Error", "Unable to write to file.");
             }
-        } else {
+        }
+        else
+        {
             send_response(client_socket, "400 Bad Request", "No data provided in PUT request.");
         }
-    } else if (strcmp(method, "DELETE") == 0) {
-        if (file_exists(path + 1)) {
-            if (remove(full_path) == 0) {
+    }
+    else if (strcmp(method, "DELETE") == 0)
+    {
+        if (file_exists(path + 1))
+        {
+            if (remove(full_path) == 0)
+            {
                 send_response(client_socket, "200 OK", "Resource deleted.");
-            } else {
+            }
+            else
+            {
                 send_response(client_socket, "500 Internal Server Error", "Unable to delete file.");
             }
-        } else {
+        }
+        else
+        {
             send_response(client_socket, "404 Not Found", "Resource not found.");
         }
-    } else {
+    }
+    else
+    {
         send_response(client_socket, "400 Bad Request", "Invalid HTTP method.");
     }
 }

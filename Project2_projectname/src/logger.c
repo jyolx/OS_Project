@@ -17,9 +17,11 @@ void log_request(HttpRequest *request, char client_ip[], int client_port)
 void log_statement(char string[])
 {
     time_t now = time(NULL);
-    fprintf(log_file, "[%s] - %s\n", ctime(&now), string);
+    char *time_str = ctime(&now);
+    time_str[strlen(time_str) - 1] = '\0'; // Remove newline character from time string
+    fprintf(log_file, "[%s] - %s\n", time_str, string);
     fflush(log_file);
-    printf("[%s] - %s\n", ctime(&now), string);
+    printf("[%s] - %s\n", time_str, string);
 };
 
 void init_logger(const char *filename)

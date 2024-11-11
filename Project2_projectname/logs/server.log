@@ -1,14 +1,9 @@
-[Mon Nov 11 18:00:41 2024
-] - Logger initialized
-[Mon Nov 11 18:00:41 2024
-] - Server started on €	:8081
+[Mon Nov 11 19:47:19 2024] - Logger initialized
+[Mon Nov 11 19:47:19 2024] - Server started on €	:8080
+[Mon Nov 11 19:47:23 2024] - Accepted connection from 127.0.0.1:38690
+[Mon Nov 11 19:47:23 2024] - Client 127.0.0.1:38690 has been added to the queue.
+[Mon Nov 11 19:47:23 2024] - Client 127.0.0.1:38690 has been removed from the queue.
+[Mon Nov 11 19:47:28 2024] - Received signal to shut down server...
+[Mon Nov 11 19:47:28 2024] - Queue has been destroyed.
 
-[Mon Nov 11 18:00:48 2024
-] - Accepted connection from 127.0.0.1:39988
-
-[Mon Nov 11 18:00:48 2024
-] - Client 127.0.0.1:39988 has been added to the queue.
-
-[Mon Nov 11 18:00:48 2024
-] - Client 127.0.0.1:39988 has been removed from the queue.
-
+[Mon Nov 11 19:47:28 2024] - Server has been shut down.
