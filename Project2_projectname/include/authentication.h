@@ -1,8 +1,10 @@
 #ifndef AUTHENTICATION_H
 #define AUTHENTICATION_H
 
-#include "http.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-int authenticate_request(HttpRequest *request);
+int authenticate_request(const char auth_header[]);
 
 #endif

@@ -4,6 +4,7 @@
 
 FILE *log_file;
 
+/*
 void log_request(HttpRequest *request, char client_ip[], int client_port)
 {
     time_t now = time(NULL);
@@ -11,6 +12,7 @@ void log_request(HttpRequest *request, char client_ip[], int client_port)
     fflush(log_file);
     printf("[%s] - %s %s %s Client -> %s:%d\n", ctime(&now), request->method, request->path, request->version, client_ip, client_port);
 };
+*/
 
 void log_statement(char string[])
 {
