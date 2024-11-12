@@ -1,11 +1,11 @@
 #include "server.h"
 #include "http.h"
-#include "authentication.h"
 #include "logger.h"
 
 #include <pthread.h>
 #include <semaphore.h>
 #include <unistd.h>
+#include <signal.h>
 
 typedef struct {
     Client_details *queue;
@@ -34,13 +34,16 @@ void enqueue(ClientQueue *q, int client_fd, char client_ip[], int client_port)
 {
     sem_wait(&q->spaces);
     sem_wait(&q->mutex);
+
     q->queue[q->rear].client_fd = client_fd;
     strcpy(q->queue[q->rear].client_ip,client_ip);
     q->queue[q->rear].client_port = client_port;
     q->rear = (q->rear + 1) % q->size;
+
     char log_message[64];
-    sprintf(log_message, "Client %s:%d has been added to the queue.\n", client_ip,client_port);
+    sprintf(log_message, "Client %s:%d has been added to the queue.", client_ip,client_port);
     log_statement(log_message);
+
     sem_post(&q->mutex);
     sem_post(&q->items);
 };
@@ -58,7 +61,7 @@ Client_details* dequeue(ClientQueue *q)
     q->front = (q->front + 1) % q->size;
 
     char log_message[64];
-    sprintf(log_message, "Client %s:%d has been removed from the queue.\n", client->client_ip, client->client_port);
+    sprintf(log_message, "Client %s:%d has been removed from the queue.", client->client_ip, client->client_port);
     log_statement(log_message);
 
     sem_post(&q->mutex);
@@ -77,21 +80,15 @@ void destroy_queue(ClientQueue *q)
 
 void handle_client(Client_details* client)
 {
-    char buffer[1024];
+    char buffer[BUFFER_SIZE];
     recv(client->client_fd, buffer, sizeof(buffer), 0);
+    //printf("%s\n", buffer);
+
+    handle_request(client->client_fd, buffer, client->client_ip, client->client_port);
     
-    HttpRequest request;
-    parse_request(buffer, &request);
-
-    if (authenticate_request(&request)) {
-        respond(client->client_fd, &request);
-    } else {
-        send(client->client_fd, "HTTP/1.1 401 Unauthorized\r\n", 26, 0);
-    }
-
-    log_request(&request,client->client_ip,client->client_port);
     close(client->client_fd);
     free(client);
+    client = NULL;
 };
 
 void *worker_thread(void *arg)
@@ -104,22 +101,41 @@ void *worker_thread(void *arg)
     return NULL;
 };
 
+int server_fd;
+
+
+void shut_down(int signal)
+{
+    if (signal == SIGINT)
+    {
+        log_statement("Received signal to shut down server...");
+        close(server_fd);
+        destroy_queue(&client_queue);
+        log_statement("Server has been shut down.");
+        exit(EXIT_SUCCESS);
+    }
+};
+
 void start_server(ServerConfig *config)
 {
-    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    signal(SIGINT, shut_down);
+   
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0)
     {
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
 
+    /*
     // Allows reuse of the port
     int opt = 1;
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
-
+    */
+   
     struct sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
@@ -133,7 +149,7 @@ void start_server(ServerConfig *config)
     }
 
     char log_message[64];
-    sprintf(log_message, "Server started on %s:%d\n", config->address, config->port);
+    sprintf(log_message, "Server started on %s:%d", config->address, config->port);
     log_statement(log_message);
 
     if(listen(server_fd, 10) < 0)
@@ -169,12 +185,9 @@ void start_server(ServerConfig *config)
         int client_port = ntohs(client_address.sin_port);
 
         char log_message[128];
-        sprintf(log_message, "Accepted connection from %s:%d\n", client_ip, client_port);
+        sprintf(log_message, "Accepted connection from %s:%d", client_ip, client_port);
         log_statement(log_message);
         
         enqueue(&client_queue, client_fd, client_ip, client_port);
     }
-
-    close(server_fd);
-    destroy_queue(&client_queue);
 };
