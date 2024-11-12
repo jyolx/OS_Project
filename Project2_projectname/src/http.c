@@ -30,6 +30,7 @@ void respond(int client_fd, HttpRequest *request) {
     } else {
         handle_unsupported_method(client_fd);
     }
+    
 }
 
 void handle_get_request(int client_fd, HttpRequest *request) {
@@ -51,33 +52,22 @@ void handle_get_request(int client_fd, HttpRequest *request) {
         sendfile(client_fd, file_fd, NULL, file_stat.st_size);
         close(file_fd);
 
-        // Open the URL in the default web browser
-        open_url_in_browser(request->path);
     }
 }
 
 void handle_post_request(int client_fd, HttpRequest *request) {
     char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nPOST request received";
     send(client_fd, response, sizeof(response) - 1, 0);
-
-    // Open the URL in the default web browser
-    open_url_in_browser(request->path);
 }
 
 void handle_put_request(int client_fd, HttpRequest *request) {
     char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nPUT request received";
     send(client_fd, response, sizeof(response) - 1, 0);
-
-    // Open the URL in the default web browser
-    open_url_in_browser(request->path);
 }
 
 void handle_delete_request(int client_fd, HttpRequest *request) {
     char response[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nDELETE request received";
     send(client_fd, response, sizeof(response) - 1, 0);
-
-    // Open the URL in the default web browser
-    open_url_in_browser(request->path);
 }
 
 void handle_unsupported_method(int client_fd) {
