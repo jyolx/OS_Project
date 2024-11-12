@@ -75,7 +75,7 @@ void destroy_queue(ClientQueue *q)
     sem_destroy(&q->mutex);
     sem_destroy(&q->items);
     sem_destroy(&q->spaces);
-    log_statement("Queue has been destroyed.\n");
+    log_statement("Queue has been destroyed.");
 };
 
 void handle_client(Client_details* client)
@@ -112,6 +112,7 @@ void shut_down(int signal)
         close(server_fd);
         destroy_queue(&client_queue);
         log_statement("Server has been shut down.");
+        close_logger();
         exit(EXIT_SUCCESS);
     }
 };
@@ -138,7 +139,13 @@ void start_server(ServerConfig *config)
    
     struct sockaddr_in address;
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
+    printf("ADDRESS : %s\n",config->address);
+    if(inet_pton(AF_INET, config->address, &address.sin_addr) <= 0)
+    {
+        perror("inet_pton failed");
+        close(server_fd);
+        exit(EXIT_FAILURE);
+    }
     address.sin_port = htons(config->port);
 
     if(bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
