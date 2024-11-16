@@ -13,7 +13,7 @@ int load_config(const char *filename, ServerConfig *config)
     {
         if (sscanf(line, "port=%d", &config->port) == 1)
             continue;
-        if (sscanf(line, "address=%s", config->address) == 1)
+        if (sscanf(line, "network=%s", config->address) == 1)
             continue;
         if (sscanf(line, "max_threads=%d", &config->max_threads) == 1)
             continue;
