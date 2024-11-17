@@ -7,7 +7,7 @@
 
 ## 2. Developing a multiple client web sever 
 - Serves Static Files
-- Supports different HTTP Methods like GET, POST, PUT and DELETE
+- Supports different HTTP Methods like `GET`, `POST`, `PUT` and `DELETE`
 - Logging Requests
 - Handles Multiple Content Types
 - Error Handling
