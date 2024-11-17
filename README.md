@@ -1,9 +1,9 @@
 # Operating Systems Course Project
-## 1. xv6 System Calls
-- shm
-- getprocinfo
-- sigfpe
-- renamefile
+## 1. Implementing xv6 System Calls
+- shm functions -> `shmget()`,`shmat()`,`shmdt()`,`shmctl()`
+- signal constants -> `SIGKILL`, `SIGUSR1`
+- file function -> `renamefile()`
+- process function -> `getprocinfo()`
 
 ## 2. Developing a multiple client web sever 
 - Serves Static Files
