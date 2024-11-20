@@ -4,7 +4,8 @@
 - signal constants -> `SIGKILL`, `SIGUSR1`
 - file function -> `rename()`
 - process function -> `getprocinfo()`
-  - gives information about the current process pid, parent pid and state
+  
+    - gives information about the current process pid, parent pid and state
 
 ## 2. Developing a multiple client web sever 
 - Serves Static Files
