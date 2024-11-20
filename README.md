@@ -1,8 +1,9 @@
 # Operating Systems Course Project
 ## 1. Implementing xv6 System Calls
 - shm functions -> `shmget()`,`shmat()`,`shmdt()`,`shmctl()`
-- signal constants -> `SIGKILL`, `SIGUSR1`
 - file function -> `rename()`
+- signal -> `raise()`
+  - implemented `raise(SIGKILL)` which terminates the current process where it has been raised
 - process function -> `getprocinfo()`
   
     - gives information about the current process pid, parent pid and state
