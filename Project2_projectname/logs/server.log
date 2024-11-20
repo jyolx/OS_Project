@@ -1,0 +1,11 @@
+[Tue Nov 12 19:54:27 2024] - Logger initialized
+[Tue Nov 12 19:54:27 2024] - Server started on 127.0.0.1:8080
+[Tue Nov 12 19:54:31 2024] - Accepted connection from 127.0.0.1:46092
+[Tue Nov 12 19:54:31 2024] - Client 127.0.0.1:46092 has been added to the queue.
+[Tue Nov 12 19:54:31 2024] - Client 127.0.0.1:46092 has been removed from the queue.
+[Tue Nov 12 19:54:32 2024] - Accepted connection from 127.0.0.1:46104
+[Tue Nov 12 19:54:32 2024] - Client 127.0.0.1:46104 has been added to the queue.
+[Tue Nov 12 19:54:32 2024] - Client 127.0.0.1:46104 has been removed from the queue.
+[Tue Nov 12 19:54:33 2024] - Received signal to shut down server...
+[Tue Nov 12 19:54:33 2024] - Queue has been destroyed.
+[Tue Nov 12 19:54:33 2024] - Server has been shut down.
