@@ -2,8 +2,9 @@
 ## 1. Implementing xv6 System Calls
 - shm functions -> `shmget()`,`shmat()`,`shmdt()`,`shmctl()`
 - signal constants -> `SIGKILL`, `SIGUSR1`
-- file function -> `renamefile()`
+- file function -> `rename()`
 - process function -> `getprocinfo()`
+  - gives information about the current process pid, parent pid and state
 
 ## 2. Developing a multiple client web sever 
 - Serves Static Files
