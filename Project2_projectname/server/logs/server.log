@@ -1,0 +1,26 @@
+[Wed Nov 20 19:40:10 2024] - Logger initialized
+[Wed Nov 20 19:40:10 2024] - Server started on 127.0.0.1:8080
+[Wed Nov 20 19:40:35 2024] - Accepted connection from 127.0.0.1:60620
+[Wed Nov 20 19:40:35 2024] - Client 127.0.0.1:60620 has been added to the queue.
+[Wed Nov 20 19:40:35 2024] - Client 127.0.0.1:60620 has been removed from the queue.
+[Wed Nov 20 19:41:09 2024] - Accepted connection from 127.0.0.1:54604
+[Wed Nov 20 19:41:09 2024] - Client 127.0.0.1:54604 has been added to the queue.
+[Wed Nov 20 19:41:09 2024] - Client 127.0.0.1:54604 has been removed from the queue.
+[Wed Nov 20 19:43:59 2024] - Accepted connection from 127.0.0.1:42900
+[Wed Nov 20 19:43:59 2024] - Client 127.0.0.1:42900 has been added to the queue.
+[Wed Nov 20 19:43:59 2024] - Client 127.0.0.1:42900 has been removed from the queue.
+[Wed Nov 20 19:44:29 2024] - Accepted connection from 127.0.0.1:38704
+[Wed Nov 20 19:44:29 2024] - Client 127.0.0.1:38704 has been added to the queue.
+[Wed Nov 20 19:44:29 2024] - Client 127.0.0.1:38704 has been removed from the queue.
+[Wed Nov 20 20:27:02 2024] - Accepted connection from 127.0.0.1:41448
+[Wed Nov 20 20:27:02 2024] - Client 127.0.0.1:41448 has been added to the queue.
+[Wed Nov 20 20:27:02 2024] - Client 127.0.0.1:41448 has been removed from the queue.
+[Wed Nov 20 20:35:27 2024] - Accepted connection from 127.0.0.1:53956
+[Wed Nov 20 20:35:27 2024] - Client 127.0.0.1:53956 has been added to the queue.
+[Wed Nov 20 20:35:27 2024] - Client 127.0.0.1:53956 has been removed from the queue.
+[Wed Nov 20 20:37:36 2024] - Accepted connection from 127.0.0.1:33420
+[Wed Nov 20 20:37:36 2024] - Client 127.0.0.1:33420 has been added to the queue.
+[Wed Nov 20 20:37:36 2024] - Client 127.0.0.1:33420 has been removed from the queue.
+[Wed Nov 20 20:40:12 2024] - Accepted connection from 127.0.0.1:55662
+[Wed Nov 20 20:40:12 2024] - Client 127.0.0.1:55662 has been added to the queue.
+[Wed Nov 20 20:40:12 2024] - Client 127.0.0.1:55662 has been removed from the queue.
