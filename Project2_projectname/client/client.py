@@ -93,14 +93,19 @@ def open_in_default_app(path):
     if not path or len(path) == 0:
         print("Invalid file or URL.")
         return
+    
+    # Check if the file exists
+    if not os.path.exists(path):
+        print(f"File does not exist: {path}")
+        return
 
     try:
         if platform.system() == 'Windows':
-            print("im here")
             os.startfile(path)
         elif platform.system() == 'Darwin':  # macOS
             subprocess.run(['open', path])
         elif platform.system() == 'Linux':
+            print("Opening in Linux")
             subprocess.run(['xdg-open', path])
         else:
             print("Unsupported OS")
@@ -108,7 +113,7 @@ def open_in_default_app(path):
         print(f"Failed to open: {path}\nError: {e}")
 
 
-def handle_response(response):
+def handle_response(response,file_name):
     """
     Handles the server's response, printing it and opening URLs or images in the web browser.
     """
@@ -116,12 +121,17 @@ def handle_response(response):
     try:
         headers, body = response.split(b"\r\n\r\n", 1)
         headers_decoded = headers.decode()
+        response_status = headers.split()[1].decode()
     except Exception as e:
         print(f"Error parsing response: {e}")
         return
 
     print("Server Response Headers:")
     print(headers_decoded)
+
+    if response_status!="200":
+        print(body.decode())
+        return
 
     # Check for content type
     content_type = None
@@ -135,12 +145,17 @@ def handle_response(response):
 
     # Determine file extension based on content type
     file_extension = content_type.split("/")[-1]
-    file_path = f"response.{file_extension}"
+    if file_extension == "plain":
+        file_extension = "txt"
+    file_path = f"data/{file_name}.{file_extension}"
+
+    # Ensure the data directory exists
+    os.makedirs("data", exist_ok=True)
 
     # Save the response body to a file
     with open(file_path, "wb") as f:
         f.write(body)
-    print(f"Response saved to {file_path}")
+    print("Response saved to", f"{file_name}.{file_extension}")
 
     open_file = input("Would you like to open the file? (y/n): ")
     if open_file.lower() == "y":
@@ -148,36 +163,45 @@ def handle_response(response):
 
 
 def main():
-    # Input curl command
-    curl_command = input("Enter a curl command: ")
+    print("Welcome to the curl client!")
+    try:
+        while True:
+            print("\n")
+            # Input curl command
+            curl_command = input("Enter a curl command (or type 'exit' to quit) : ")
+            if curl_command.lower() == "exit":
+                break
 
-    # Parse the curl command
-    method, url, headers, data, auth = parse_curl_command(curl_command)
+            # Parse the curl command
+            method, url, headers, data, auth = parse_curl_command(curl_command)
 
-    if not url:
-        print("Error: No URL found in the curl command.")
-        return
+            if not url:
+                print("Error: No URL found in the curl command.")
+                return
 
-    # Parse URL into host and path
-    parsed_url = urlparse(url)
-    host = parsed_url.hostname
-    port = parsed_url.port if parsed_url.port else 80  # Default to port 80
-    path = parsed_url.path if parsed_url.path else "/"
-    if parsed_url.query:
-        path += f"?{parsed_url.query}"
+            # Parse URL into host and path
+            parsed_url = urlparse(url)
+            host = parsed_url.hostname
+            port = parsed_url.port if parsed_url.port else 80  # Default to port 80
+            path = parsed_url.path if parsed_url.path else "/"
+            if parsed_url.query:
+                path += f"?{parsed_url.query}"
 
-    # Build the raw HTTP request
-    raw_request = build_http_request(method, host, path, headers, data, auth)
+            file_name=parsed_url.path.split("/")[-1].split(".")[0]
 
-    # Send the HTTP request via socket and get the response
-    response = send_request_via_socket(host, port, raw_request)
+            # Build the raw HTTP request
+            raw_request = build_http_request(method, host, path, headers, data, auth)
 
-    # Handle the server's response
-    if isinstance(response, bytes):
-        handle_response(response)
-    else:
-        print(response)
+            # Send the HTTP request via socket and get the response
+            response = send_request_via_socket(host, port, raw_request)
 
+            # Handle the server's response
+            if isinstance(response, bytes):
+                handle_response(response,file_name)
+            else:
+                print(response)
+    except KeyboardInterrupt:
+        print("\nExiting curl client.")
 
 if __name__ == "__main__":
     main()

@@ -13,6 +13,7 @@ const char* get_content_type(const char *path)
 
     if (strcmp(ext, ".html") == 0) return "text/html";
     if (strcmp(ext, ".css") == 0) return "text/css";
+    if (strcmp(ext, ".txt") == 0) return "text/plain";
     if (strcmp(ext, ".js") == 0) return "application/javascript";
     if (strcmp(ext, ".json") == 0) return "application/json";
     if (strcmp(ext, ".png") == 0) return "image/png";
@@ -24,22 +25,25 @@ const char* get_content_type(const char *path)
     if (strcmp(ext, ".wav") == 0) return "audio/wav";
     if (strcmp(ext, ".mp4") == 0) return "video/mp4";
     if (strcmp(ext, ".avi") == 0) return "video/x-msvideo";
+    if (strcmp(ext, ".mpeg") == 0) return "video/mpeg";
+    if (strcmp(ext, ".pdf") == 0) return "application/pdf";
 
     return "application/octet-stream"; // Default binary type
 }
 
 // Send an HTTP response to the client
-void send_response(int client_socket, const char *status, const char *body,const char* content_type)
+void send_response(int client_socket, const char *status, const char *body, const char* content_type, size_t body_length)
 {
     char response[BUFFER_SIZE];
 
-    snprintf(response, BUFFER_SIZE,
+    int header_length = snprintf(response, BUFFER_SIZE,
              "HTTP/1.1 %s\r\n"
              "Content-Length: %ld\r\n"
              "Content-Type: %s\r\n"
-             "\r\n%s", status, strlen(body),content_type, body);
+             "\r\n", status, body_length, content_type);
 
-    send(client_socket, response, strlen(response), 0);
+    send(client_socket, response, header_length, 0);
+    send(client_socket, body, body_length, 0);
 }
 
 // Function to check if a file exists in the data directory
@@ -61,7 +65,7 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
     const char *auth_header = strstr(buffer, "Authorization: ");
     if (strstr(path, "/secure") && !authenticate_request(auth_header ? auth_header + 15 : NULL))
     {
-        send_response(client_socket, "401 Unauthorized", "Unauthorized", "text/plain");
+        send_response(client_socket, "401 Unauthorized", "Unauthorized", "text/plain", strlen("Unauthorized"));
         return;
     }
 
@@ -77,28 +81,27 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
     {
         if (file_exists(path + 1))
         {
-            FILE *file = fopen(full_path, "r");
+            FILE *file = fopen(full_path, "rb");  // Open file in binary mode
             if (file)
             {
                 fseek(file, 0, SEEK_END);
                 long file_size = ftell(file);
                 fseek(file, 0, SEEK_SET);
-                char *file_content = malloc(file_size + 1);
+                char *file_content = malloc(file_size);
                 fread(file_content, 1, file_size, file);
                 fclose(file);
-                file_content[file_size] = '\0';
 
-                send_response(client_socket, "200 OK", file_content, content_type);
+                send_response(client_socket, "200 OK", file_content, content_type, file_size);
                 free(file_content);
             }
             else
             {
-                send_response(client_socket, "500 Internal Server Error", "Unable to read file.", "text/plain");
+                send_response(client_socket, "500 Internal Server Error", "Unable to read file.", "text/plain", strlen("Unable to read file."));
             }
         }
         else
         {
-            send_response(client_socket, "404 Not Found", "Resource not found.", "text/plain");
+            send_response(client_socket, "404 Not Found", "Resource not found.", "text/plain", strlen("Resource not found."));
         }
     }
     else if (strcmp(method, "POST") == 0)
@@ -106,21 +109,21 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
         const char *data = strstr(buffer, "\r\n\r\n") + 4;
         if (data)
         {
-            FILE *file = fopen(full_path, "w");
+            FILE *file = fopen(full_path, "wb");  // Open file in binary mode
             if (file)
             {
                 fwrite(data, 1, strlen(data), file);
                 fclose(file);
-                send_response(client_socket, "201 Created", "Resource created.", "text/plain");
+                send_response(client_socket, "201 Created", "Resource created.", "text/plain", strlen("Resource created."));
             }
             else
             {
-                send_response(client_socket, "500 Internal Server Error", "Unable to write to file.", "text/plain");
+                send_response(client_socket, "500 Internal Server Error", "Unable to write to file.", "text/plain", strlen("Unable to write to file."));
             }
         }
         else
         {
-            send_response(client_socket, "400 Bad Request", "No data provided in POST request.", "text/plain");
+            send_response(client_socket, "400 Bad Request", "No data provided in POST request.", "text/plain", strlen("No data provided in POST request."));
         }
     }
     else if (strcmp(method, "PUT") == 0)
@@ -128,21 +131,21 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
         const char *data = strstr(buffer, "\r\n\r\n") + 4;
         if (data)
         {
-            FILE *file = fopen(full_path, "w");
+            FILE *file = fopen(full_path, "wb");  // Open file in binary mode
             if (file)
             {
                 fwrite(data, 1, strlen(data), file);
                 fclose(file);
-                send_response(client_socket, "200 OK", "Resource updated.", "text/plain");
+                send_response(client_socket, "200 OK", "Resource updated.", "text/plain", strlen("Resource updated."));
             }
             else
             {
-                send_response(client_socket, "500 Internal Server Error", "Unable to write to file.", "text/plain");
+                send_response(client_socket, "500 Internal Server Error", "Unable to write to file.", "text/plain", strlen("Unable to write to file."));
             }
         }
         else
         {
-            send_response(client_socket, "400 Bad Request", "No data provided in PUT request.", "text/plain");
+            send_response(client_socket, "400 Bad Request", "No data provided in PUT request.", "text/plain", strlen("No data provided in PUT request."));
         }
     }
     else if (strcmp(method, "DELETE") == 0)
@@ -151,21 +154,20 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
         {
             if (remove(full_path) == 0)
             {
-                send_response(client_socket, "200 OK", "Resource deleted.", "text/plain");
+                send_response(client_socket, "200 OK", "Resource deleted.", "text/plain", strlen("Resource deleted."));
             }
             else
             {
-                send_response(client_socket, "500 Internal Server Error", "Unable to delete file.", "text/plain");
+                send_response(client_socket, "500 Internal Server Error", "Unable to delete file.", "text/plain", strlen("Unable to delete file."));
             }
         }
         else
         {
-            send_response(client_socket, "404 Not Found", "Resource not found.", "text/plain");
+            send_response(client_socket, "404 Not Found", "Resource not found.", "text/plain", strlen("Resource not found."));
         }
     }
     else
     {
-        send_response(client_socket, "400 Bad Request", "Invalid HTTP method.", "text/plain");
+        send_response(client_socket, "400 Bad Request", "Invalid HTTP method.", "text/plain", strlen("Invalid HTTP method."));
     }
 }
-

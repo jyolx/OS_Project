@@ -1,26 +1,29 @@
-[Wed Nov 20 19:40:10 2024] - Logger initialized
-[Wed Nov 20 19:40:10 2024] - Server started on 127.0.0.1:8080
-[Wed Nov 20 19:40:35 2024] - Accepted connection from 127.0.0.1:60620
-[Wed Nov 20 19:40:35 2024] - Client 127.0.0.1:60620 has been added to the queue.
-[Wed Nov 20 19:40:35 2024] - Client 127.0.0.1:60620 has been removed from the queue.
-[Wed Nov 20 19:41:09 2024] - Accepted connection from 127.0.0.1:54604
-[Wed Nov 20 19:41:09 2024] - Client 127.0.0.1:54604 has been added to the queue.
-[Wed Nov 20 19:41:09 2024] - Client 127.0.0.1:54604 has been removed from the queue.
-[Wed Nov 20 19:43:59 2024] - Accepted connection from 127.0.0.1:42900
-[Wed Nov 20 19:43:59 2024] - Client 127.0.0.1:42900 has been added to the queue.
-[Wed Nov 20 19:43:59 2024] - Client 127.0.0.1:42900 has been removed from the queue.
-[Wed Nov 20 19:44:29 2024] - Accepted connection from 127.0.0.1:38704
-[Wed Nov 20 19:44:29 2024] - Client 127.0.0.1:38704 has been added to the queue.
-[Wed Nov 20 19:44:29 2024] - Client 127.0.0.1:38704 has been removed from the queue.
-[Wed Nov 20 20:27:02 2024] - Accepted connection from 127.0.0.1:41448
-[Wed Nov 20 20:27:02 2024] - Client 127.0.0.1:41448 has been added to the queue.
-[Wed Nov 20 20:27:02 2024] - Client 127.0.0.1:41448 has been removed from the queue.
-[Wed Nov 20 20:35:27 2024] - Accepted connection from 127.0.0.1:53956
-[Wed Nov 20 20:35:27 2024] - Client 127.0.0.1:53956 has been added to the queue.
-[Wed Nov 20 20:35:27 2024] - Client 127.0.0.1:53956 has been removed from the queue.
-[Wed Nov 20 20:37:36 2024] - Accepted connection from 127.0.0.1:33420
-[Wed Nov 20 20:37:36 2024] - Client 127.0.0.1:33420 has been added to the queue.
-[Wed Nov 20 20:37:36 2024] - Client 127.0.0.1:33420 has been removed from the queue.
-[Wed Nov 20 20:40:12 2024] - Accepted connection from 127.0.0.1:55662
-[Wed Nov 20 20:40:12 2024] - Client 127.0.0.1:55662 has been added to the queue.
-[Wed Nov 20 20:40:12 2024] - Client 127.0.0.1:55662 has been removed from the queue.
+[Thu Nov 21 22:42:47 2024] - Logger initialized
+[Thu Nov 21 22:42:47 2024] - Server started on 127.0.0.1:8080
+[Thu Nov 21 22:43:43 2024] - Accepted connection from 127.0.0.1:37232
+[Thu Nov 21 22:43:43 2024] - Client 127.0.0.1:37232 has been added to the queue.
+[Thu Nov 21 22:43:43 2024] - Client 127.0.0.1:37232 has been removed from the queue.
+[Thu Nov 21 22:46:49 2024] - Accepted connection from 127.0.0.1:54306
+[Thu Nov 21 22:46:49 2024] - Client 127.0.0.1:54306 has been added to the queue.
+[Thu Nov 21 22:46:49 2024] - Client 127.0.0.1:54306 has been removed from the queue.
+[Thu Nov 21 22:47:31 2024] - Accepted connection from 127.0.0.1:33438
+[Thu Nov 21 22:47:31 2024] - Client 127.0.0.1:33438 has been added to the queue.
+[Thu Nov 21 22:47:31 2024] - Client 127.0.0.1:33438 has been removed from the queue.
+[Thu Nov 21 22:48:34 2024] - Accepted connection from 127.0.0.1:35210
+[Thu Nov 21 22:48:34 2024] - Client 127.0.0.1:35210 has been added to the queue.
+[Thu Nov 21 22:48:34 2024] - Client 127.0.0.1:35210 has been removed from the queue.
+[Thu Nov 21 22:52:30 2024] - Accepted connection from 127.0.0.1:43242
+[Thu Nov 21 22:52:30 2024] - Client 127.0.0.1:43242 has been added to the queue.
+[Thu Nov 21 22:52:30 2024] - Client 127.0.0.1:43242 has been removed from the queue.
+[Thu Nov 21 23:00:44 2024] - Accepted connection from 127.0.0.1:37210
+[Thu Nov 21 23:00:44 2024] - Client 127.0.0.1:37210 has been added to the queue.
+[Thu Nov 21 23:00:44 2024] - Client 127.0.0.1:37210 has been removed from the queue.
+[Thu Nov 21 23:01:29 2024] - Accepted connection from 127.0.0.1:35528
+[Thu Nov 21 23:01:29 2024] - Client 127.0.0.1:35528 has been added to the queue.
+[Thu Nov 21 23:01:29 2024] - Client 127.0.0.1:35528 has been removed from the queue.
+[Thu Nov 21 23:02:10 2024] - Accepted connection from 127.0.0.1:52024
+[Thu Nov 21 23:02:10 2024] - Client 127.0.0.1:52024 has been added to the queue.
+[Thu Nov 21 23:02:10 2024] - Client 127.0.0.1:52024 has been removed from the queue.
+[Thu Nov 21 23:24:00 2024] - Received signal to shut down server...
+[Thu Nov 21 23:24:00 2024] - Queue has been destroyed.
+[Thu Nov 21 23:24:00 2024] - Server has been shut down.
