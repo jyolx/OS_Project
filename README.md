@@ -4,11 +4,16 @@
 1. [Introduction](#1-introduction)
 2. [Getting Started](#2-getting-started)
 3. [Implementing xv6 System Calls](#3-implementing-xv6-system-calls)
-   - [Shared Memory](#i-shared-memory)
+
+    - [Shared Memory](#i-shared-memory)
+
    - [Rename File](#ii-rename-file)
    - [Raise Signal](#iii-raise-signal)
    - [Get Process Information](#iv-get-process-information)
 4. [Developing a Multiple Client Web Server](#4-developing-a-multiple-client-web-server)
+    - [Folders and their purpose](#folders-and-their-purpose)
+
+    - [Functionalities](#functionalities)
 5. [Contributors](#5-contributors)
 
 ## 1. Introduction
@@ -112,7 +117,60 @@ $ myproc
 
 ## 4. Developing a multiple client web server
 
-We built a multi-threaded web server capable of handling multiple clients concurrently. This server supports essential HTTP methods and includes advanced features.
+We developed a multi-threaded web server capable of handling up to 10 client requests concurrently, leveraging a thread pool architecture to manage the load. The server utilizes a producer-consumer model, where client requests act as the producers and the threads in the pool serve as consumers. The server supports essential HTTP methods to handle a wide variety of client interactions. Each request is logged, capturing relevant details of the server's activity and storing them in a log file for monitoring and debugging purposes. Authentication mechanisms are integrated for restricted resources, ensuring secure access control. Additionally, the server is equipped with robust error handling capabilities, managing various HTTP errors and providing appropriate responses to clients, contributing to a reliable and secure web service.
+
+## Folders and their purpose
+
+### i. Client
+- Contains sample client python code to simulate client requests.
+
+### ii. Server
+
+- ### config
+  - `server.config` : defines the paramaters of port, network, max thread and document root of the server
+
+  - `users.txt` : keeps track of all users and with their passwords 
+
+- ### data
+  - Contains server data requested by the client.
+
+  - Data can be an image, text, audio or html files.
+  - Some data are under the `secure` folder which means the client needs to be authenticated to access them.
+
+- ### include
+  - Contains the header files to be included to carry out the necessary functionalities
+
+    - `authentication.h`
+
+    - `config.h`
+    - `http.h`
+    - `logger.h`
+    - `server.h`
+
+- ### logs
+  - Stores all the logs throughout the server in a `server.log` file
+
+- ### src
+  - Contains the files for carrying out all the functionalities
+
+    - `authentication.c` : Decryptes the base64 encoded username and password of the client and checks for a match in `config/users.txt`.
+
+    - `config.c` : Loads the `server.conf` onto a data structure.
+
+    - `http.c` : 
+      - Contains functions which handle the HTTP request methods like `GET`, `POST`, `PUT` and `DELETE`.
+
+      - It also checks if the client is authorised if it requests data in the `data/secure` folder. 
+      - It also sends back the appropriate HTTP response.
+
+    - `logger.c` : A basic implememtation of a logger to log the server actions on to `logs/server.log`.
+
+    - `server.c` : Using TCP it offers a connection with the clients, implements multithreading to handle multiple client requests and uses semaphores for synchronisation.
+
+    - `main.c` : Root of the server.
+
+
+### Functionalities
 
 - Serves Static Files
 - Supports different HTTP Methods like `GET`, `POST`, `PUT` and `DELETE`
