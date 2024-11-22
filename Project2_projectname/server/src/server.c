@@ -28,6 +28,7 @@ void init_queue(ClientQueue *q, int size)
     sem_init(&q->mutex, 0, 1);
     sem_init(&q->items, 0, 0);
     sem_init(&q->spaces, 0, size);
+    log_statement("Queue has been initialized.");
 };
 
 void enqueue(ClientQueue *q, int client_fd, char client_ip[], int client_port)
@@ -82,10 +83,11 @@ void handle_client(Client_details* client)
 {
     char buffer[BUFFER_SIZE];
     recv(client->client_fd, buffer, sizeof(buffer), 0);
-    //printf("%s\n", buffer);
 
     handle_request(client->client_fd, buffer, client->client_ip, client->client_port);
-    
+
+    char log_message[128];
+    sprintf(log_message, "Request from %s:%d has been handled. Closing client socket...", client->client_ip, client->client_port);    
     close(client->client_fd);
     free(client);
     client = NULL;
@@ -139,7 +141,6 @@ void start_server(ServerConfig *config)
    
     struct sockaddr_in address;
     address.sin_family = AF_INET;
-    printf("ADDRESS : %s\n",config->address);
     if(inet_pton(AF_INET, config->address, &address.sin_addr) <= 0)
     {
         perror("inet_pton failed");
@@ -173,6 +174,10 @@ void start_server(ServerConfig *config)
     {
         pthread_create(&thread_pool[i], NULL, worker_thread, NULL);
     }
+
+    BZERO(log_message, 64);
+    sprintf(log_message, "Thread pool has been created with %d threads.", config->max_threads);
+    log_statement(log_message);
 
     while (1)
     {

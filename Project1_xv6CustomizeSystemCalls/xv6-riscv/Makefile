@@ -144,6 +144,7 @@ UPROGS=\
 	$U/_myreadershm\
 	$U/_myproc\
 	$U/_mysignal\
+	$U/_myrename\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

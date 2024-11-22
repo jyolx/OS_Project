@@ -42,3 +42,4 @@ entry("shmdt");
 entry("shmctl");
 entry("procinfo");
 entry("raise");
+entry("rename");

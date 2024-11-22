@@ -503,3 +503,71 @@ sys_pipe(void)
   }
   return 0;
 }
+
+uint64 sys_rename(void) 
+{
+    char old[DIRSIZ], new[DIRSIZ];
+    struct inode *dp_old, *ip;
+    char old_base[DIRSIZ];
+    struct dirent de;
+    uint off;
+
+    // Fetch arguments
+    if (argstr(0, old, DIRSIZ) < 0 || argstr(1, new, DIRSIZ) < 0)
+        return -1;
+
+    // Begin operation : Ensures operations inside are atomic
+    begin_op();
+
+    // Find parent directory of the old file
+    dp_old = nameiparent(old, old_base);
+    if (dp_old == 0)
+    {
+        end_op();
+        return -1;
+    }
+    ilock(dp_old); //lock on old directory
+
+    // Find the old file inode
+    ip = dirlookup(dp_old, old, &off);
+    if (ip == 0)
+    {
+        iunlockput(dp_old);
+        end_op();
+        return -1;
+    }
+
+    // Check if new file already exists in that directory
+    if (dirlookup(dp_old, new, 0) != 0) 
+    {
+        iunlockput(dp_old);
+        end_op();
+        return -1; 
+    }
+
+    // Write the new name to the old directory
+    memset(&de, 0, sizeof(de));
+    if (writei(dp_old, 0, (uint64)&de, off, sizeof(de)) != sizeof(de)) {
+        iunlockput(dp_old);
+        end_op();
+        return -1;
+    }
+
+    // Link the new name to the inode
+    if (dirlink(dp_old, new, ip->inum) < 0) {
+        iunlockput(dp_old);
+        end_op();
+        return -1;
+    }
+
+    // Update the inode reference count
+    ip->nlink++;
+    iupdate(ip);
+
+    // Unlock the old directory
+    iunlockput(dp_old);
+
+    // End the operation
+    end_op();
+    return 0;
+}

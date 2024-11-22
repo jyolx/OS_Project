@@ -30,6 +30,7 @@ int shmdt(int);
 int shmctl(int,int);
 int procinfo(void);
 int raise(int);
+int rename(const char *old, const char *new);
 
 // ulib.c
 int stat(const char*, struct stat*);

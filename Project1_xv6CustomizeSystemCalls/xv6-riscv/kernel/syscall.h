@@ -26,3 +26,4 @@
 #define SYS_shmctl 25
 #define SYS_procinfo 26
 #define SYS_raise 27
+#define SYS_rename 28

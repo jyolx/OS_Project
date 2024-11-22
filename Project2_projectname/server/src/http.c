@@ -5,7 +5,11 @@
 
 #define DATA_DIR "data/" // Define the data directory
 
-// Function to determine the content type based on the file extension
+/**
+ * @brief Function to determine the content type based on the file extension
+ * @param path The file path
+ * @return The content type
+ */
 const char* get_content_type(const char *path)
 {
     const char *ext = strrchr(path, '.');
@@ -31,7 +35,14 @@ const char* get_content_type(const char *path)
     return "application/octet-stream"; // Default binary type
 }
 
-// Send an HTTP response to the client
+/**
+ * @brief Function to send an HTTP response
+ * @param client_socket The client socket
+ * @param status The HTTP status code
+ * @param body The response body
+ * @param content_type The content type
+ * @param body_length The length of the response body
+ */
 void send_response(int client_socket, const char *status, const char *body, const char* content_type, size_t body_length)
 {
     char response[BUFFER_SIZE];
@@ -46,7 +57,11 @@ void send_response(int client_socket, const char *status, const char *body, cons
     send(client_socket, body, body_length, 0);
 }
 
-// Function to check if a file exists in the data directory
+/**
+ * @brief Function to check if a file exists in the data directory
+ * @param path The file path
+ * @return 1 if the file exists, 0 otherwise
+ */
 int file_exists(const char *path)
 {
     char full_path[1024];
@@ -55,25 +70,33 @@ int file_exists(const char *path)
     return (stat(full_path, &buffer) == 0);
 }
 
-// Handle different HTTP methods
+/**
+ * @brief Handle different HTTP methods
+ * @param client_socket The client socket
+ * @param buffer The HTTP request buffer
+ * @param client_ip The client IP address
+ * @param client_port The client port
+*/
 void handle_request(int client_socket, const char buffer[], const char client_ip[], int client_port)
 {
-    char method[10], path[1024];
+    char method[10], path[1024], log[1024];
     sscanf(buffer, "%s %s", method, path);
 
     // Check authorization if the path is secure
     const char *auth_header = strstr(buffer, "Authorization: ");
     if (strstr(path, "/secure") && !authenticate_request(auth_header ? auth_header + 15 : NULL))
     {
+        bzero(log, sizeof(log));
+        snprintf(log, sizeof(log), "Unauthorized access attempt from %s:%d", client_ip, client_port);
+        log_statement(log);
         send_response(client_socket, "401 Unauthorized", "Unauthorized", "text/plain", strlen("Unauthorized"));
         return;
     }
 
     // Construct full file path with data directory
     char full_path[1024];
-    snprintf(full_path, sizeof(full_path), DATA_DIR "%s", path + 1);  // Skip leading '/'
+    snprintf(full_path, sizeof(full_path), DATA_DIR "%s", path + 1);
 
-    // Determine the content type
     const char *content_type = get_content_type(full_path);
 
     // Handle HTTP methods
