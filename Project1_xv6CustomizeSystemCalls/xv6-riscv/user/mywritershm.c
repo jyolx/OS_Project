@@ -1,4 +1,5 @@
-// writer.c - A simple program to write to shared memory
+// User program to write to shared memory
+
 #include "kernel/types.h"
 #include "kernel/stat.h"
 #include "user.h"

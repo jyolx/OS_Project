@@ -1,3 +1,5 @@
+// User program to raise SIGKILL
+
 #include "kernel/types.h"
 #include "user.h"
 
