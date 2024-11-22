@@ -106,7 +106,7 @@ def     open_in_default_app(path):
             subprocess.run(['open', path])
         elif platform.system() == 'Linux':
             print("Opening in Linux")
-            subprocess.run(['xdg-open', path])
+            subprocess.run(['xdg-open', path], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
         else:
             print("Unsupported OS")
     except Exception as e:

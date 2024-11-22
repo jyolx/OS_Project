@@ -37,11 +37,13 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
         {
             bzero(log, sizeof(log));
             snprintf(log, sizeof(log), "Client %s:%d -> Valid credentials...authorization success", client_ip, client_port);
+            log_statement(log);
         }
         else if(authenticate_request(auth_header ? auth_header + 15 : NULL) == 2)
         {
             bzero(log, sizeof(log));
             snprintf(log, sizeof(log), "Client %s:%d -> Memory allocation... authorization failed", client_ip, client_port);
+            log_statement(log);
             send_response(client_socket, "500 Internal Server Error", "Memory allocation failed\n", "text/plain", strlen("Memory allocation failed\n"));
             return;
         }
@@ -49,6 +51,7 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
         {
             bzero(log, sizeof(log));
             snprintf(log, sizeof(log), "Client %s:%d -> Unable to open users file...authentication failed", client_ip, client_port);
+            log_statement(log);
             send_response(client_socket, "500 Internal Server Error", "Authorization cannot be right now\n", "text/plain", strlen("Authorization cannot be right now\n"));
             return;
         }
@@ -81,6 +84,7 @@ void handle_request(int client_socket, const char buffer[], const char client_ip
     {
         bzero(log, sizeof(log));
         snprintf(log, sizeof(log), "Client %s:%d -> Invalid HTTP method: %s", client_ip, client_port, method);
+        log_statement(log);
         send_response(client_socket, "400 Bad Request", "Invalid HTTP method.\n", "text/plain", strlen("Invalid HTTP method.\n"));
     }
 };

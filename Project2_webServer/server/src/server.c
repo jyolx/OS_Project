@@ -88,6 +88,7 @@ void handle_client(Client_details* client)
 
     char log_message[128];
     sprintf(log_message, "Client %s:%d -> Request has been handled. Closing client socket...", client->client_ip, client->client_port);    
+    log_statement(log_message);
     close(client->client_fd);
     free(client);
     client = NULL;
