@@ -24,3 +24,5 @@
 #define SYS_shmat  23
 #define SYS_shmdt  24
 #define SYS_shmctl 25
+#define SYS_procinfo 26
+#define SYS_raise 27

@@ -40,3 +40,5 @@ entry("shmget");
 entry("shmat");
 entry("shmdt");
 entry("shmctl");
+entry("procinfo");
+entry("raise");

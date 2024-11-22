@@ -8,3 +8,7 @@ typedef unsigned int  uint32;
 typedef unsigned long uint64;
 
 typedef uint64 pde_t;
+#define SIGKILL 9
+struct signal {
+    int pending;  // Flag indicating if the signal is pending
+};
