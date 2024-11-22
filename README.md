@@ -170,16 +170,47 @@ We developed a multi-threaded web server capable of handling up to 10 client req
     - `main.c` : Root of the server.
 
 
-### Functionalities
+## Functionalities
 
-- Serves Static Files
-- Supports different HTTP Methods like `GET`, `POST`, `PUT` and `DELETE`
-- Logging Requests
-- Handles Multiple Content Types
-- Error Handling
-- Thread Pooling
-- Configuration File
-- Basic Authentication
+- ### Serves Static Files
+
+  - It serves static  content like HTML, images, and audio from the `server/data` folder to the clients, ensuring content is sent in response to HTTP requests.
+
+- ### Supports different HTTP Methods
+  - `GET` : used by clients to retrieve data from the server.
+
+  - `POST` : used by clients to send data to the server.
+  - `PUT` : used to update an existing resource or create a new resource if it does not already exist.
+  - `DELETE` : used to remove a resource from the server.
+
+- ### Logging Requests
+  - The server logs each client request and its response in the `server/logs/server.log` file, helping monitor activity and troubleshoot issues.
+
+- ### Handles Multiple Content Types
+  - The server can serve various types of content (e.g., images, text, HTML, audio) based on the request type. The content is served from the `server/data` folder.
+
+- ### Error Handling
+  - The server includes error handling mechanisms and returns appropriate HTTP error responses which include : 
+
+    - `400 : Bad Request`
+
+    - `401 : Unauthorized`
+    - `404: Not Found`
+    - `500 : Internal Server Error`
+  - On the other hand, it returns `200 : OK` which tells us that the client request has been handled successfully.
+
+- ### Thread Pooling
+  - The server uses a thread pool of 10 threads to handle multiple client requests concurrently, improving performance and scalability by reusing threads for handling subsequent client connections.
+
+  - Client requests are `enqueue()` to the queue data structure and worker threads `dequeue()` the requests from the queue.
+  - Access to the queue is synchronised using semaphores as used in the `Producer-Consumer problem`.
+  - The client requests act like the Producers and the threads which perform these requests act like the Consumers.
+
+- ### Configuration File
+  - The server is configured through a `server/config/server.config` file, which defines the parameters like server port, network settings, and maximum threads.
+
+- ### Basic Authentication
+  - The server requires authentication for certain resources stored in the `server/data/secure` folder. Clients must provide valid credentials (defined in `server/config/users.txt`) before being granted access to these resources.
 
 ## 5. Contributors
 <a href="https://github.com/jyolx/OS_Project/graphs/contributors">
