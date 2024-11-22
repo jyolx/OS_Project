@@ -76,7 +76,7 @@ Once you enter a string to write into the shared memory run the wrapper function
 $ myreadershm
 ```
 
-<img src="images/shm.png" alt="SHM system call" width="400">
+<img src="images/shm.png" alt="SHM system call" width="300">
 
 ### ii. Rename File
 - `rename()`
@@ -89,7 +89,7 @@ Wrapper function for renaming file
 $ myrename
 ```
 
-<img src="images/rename().png" alt="Rename system call" width="400">
+<img src="images/rename().png" alt="Rename system call" width="300">
 
 ### iii. Raise signal
 - `raise()`
@@ -101,7 +101,7 @@ Wrapper function for raising signal
 $ mysignal
 ```
 
-<img src="images/raise().png" alt="Raise system call" width="300">
+<img src="images/raise().png" alt="Raise system call" width="200">
 
 ### iv. Get process information
 - `getprocinfo()`
@@ -113,7 +113,7 @@ Wrapper function for getting information about the current process
 $ myproc
 ```
 
-<img src="images/getprocinfo().png" alt="Procinfo system call" width="400">
+<img src="images/getprocinfo().png" alt="Procinfo system call" width="300">
 
 ## 4. Developing a multiple client web server
 
