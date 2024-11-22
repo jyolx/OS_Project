@@ -13,8 +13,8 @@ typedef struct {
     int rear;
     int size;
     sem_t mutex;
-    sem_t items;
-    sem_t spaces;
+    sem_t items;    //full semaphore
+    sem_t spaces;   //empty semaphore
 }ClientQueue;
 
 ClientQueue client_queue;

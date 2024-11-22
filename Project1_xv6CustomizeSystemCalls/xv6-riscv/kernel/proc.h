@@ -106,4 +106,5 @@ struct proc {
   char name[16];               // Process name (debugging)
 
   uint64 shm_va;              //Currently assuming a process can only attach one shm at a time.
+  struct signal signals[32];
 };

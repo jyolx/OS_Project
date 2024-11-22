@@ -140,8 +140,10 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
-	$U/_writer_shm\
-	$U/_reader_shm\
+	$U/_mywritershm\
+	$U/_myreadershm\
+	$U/_myproc\
+	$U/_mysignal\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

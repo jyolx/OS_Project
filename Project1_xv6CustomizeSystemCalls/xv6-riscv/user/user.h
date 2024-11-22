@@ -1,4 +1,5 @@
 struct stat;
+typedef unsigned int uint;
 
 // system calls
 int fork(void);
@@ -27,6 +28,8 @@ int shmget(int,int,int);
 void *shmat(int);
 int shmdt(int);
 int shmctl(int,int);
+int procinfo(void);
+int raise(int);
 
 // ulib.c
 int stat(const char*, struct stat*);

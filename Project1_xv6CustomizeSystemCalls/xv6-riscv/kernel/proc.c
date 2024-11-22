@@ -457,6 +457,12 @@ scheduler(void)
     int found = 0;
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
+      if(p->signals[SIGKILL].pending){
+          // Handle SIGKILL: Kill the process
+          p->killed = 1;
+          p->signals[SIGKILL].pending = 0;
+          p->state = ZOMBIE;
+      }
       if(p->state == RUNNABLE) {
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it

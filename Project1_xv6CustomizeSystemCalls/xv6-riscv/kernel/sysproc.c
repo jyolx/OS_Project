@@ -133,3 +133,44 @@ sys_shmctl(void)
 
     return shmctl(shmid, cmd);
 }
+
+// System call : getprocinfo
+uint64 
+sys_procinfo(void) {
+  struct proc *p = myproc();  // Get the current process
+  
+  // Extract PID, state, and priority
+  int pid = p->pid;
+  int ppid = p->parent ? p->parent->pid : -1;
+  int state = p->state;
+
+  static const char *state_names[] = {
+    "UNUSED",    // 0
+    "USED",       // 1
+    "SLEEPING",   // 2
+    "RUNNABLE",   // 3
+    "RUNNING",    // 4
+    "ZOMBIE"      // 5
+  };
+
+  // Print the process info
+  printf("PID: %d, Parent PID: %d, State: %s\n", pid, ppid, state_names[state]);
+  
+  return 0;
+}
+
+// System call : raise
+uint64
+sys_raise(void) {
+    int signum;
+    argint(0, &signum);
+
+    if (signum < 0 || signum >= 32)
+        return -1;
+
+    struct proc *p = myproc();
+    p->signals[signum].pending = 1; // Mark signal as pending
+    yield();
+    printf("Signal %d raised\n", signum);
+    return 0;
+}
