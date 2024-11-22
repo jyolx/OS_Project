@@ -115,6 +115,6 @@ We built a multi-threaded web server capable of handling multiple clients concur
 - Basic Authentication
 
 ## 5. Contributors
-<a href="https://github.com/jyolx/OS_Project/contributors">
-  <img src="https://contrib.rocks/image?repo=jyolx/OS_Project/contributors" />
+<a href="https://github.com/jyolx/OS_Project/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=jyolx/OS_Project" />
 </a>
