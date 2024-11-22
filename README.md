@@ -47,6 +47,7 @@ $ cd Project1_xv6CustomizeSystemCalls/xv6-riscv
 $ make clean
 $ make qemu 
 ```
+To exit enter  ```Ctrl+A X```
 
 ### You can find the following system calls:
 
@@ -70,6 +71,8 @@ Once you enter a string to write into the shared memory run the wrapper function
 $ myreadershm
 ```
 
+![SHM](images/shm.png "SHM system call")
+
 ### ii. Rename File
 - `rename()`
 
@@ -81,6 +84,8 @@ Wrapper function for renaming file
 $ myrename
 ```
 
+![Rename](images/rename().png "Rename system call")
+
 ### iii. Raise signal
 - `raise()`
 
@@ -90,6 +95,7 @@ Wrapper function for raising signal
 ```bash
 $ mysignal
 ```
+![Raise](images/raise().png "Raise system call")
 
 ### iv. Get process information
 - `getprocinfo()`
@@ -100,6 +106,7 @@ Wrapper function for getting information about the current process
 ```bash
 $ myproc
 ```
+![Procinfo](images/getprocinfo().png "Procinfo system call")
 
 ## 4. Developing a multiple client web server
 
