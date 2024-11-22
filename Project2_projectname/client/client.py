@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import shlex
 import socket
 import webbrowser
@@ -175,7 +177,7 @@ def main():
 
             if not url:
                 print("Error: No URL found in the curl command.")
-                return
+                continue
 
             # Parse URL into host and path
             parsed_url = urlparse(url)

@@ -24,7 +24,7 @@ char* base64_decode(const char *input)
     char *output = (char*)malloc(output_length + 1); // +1 for null terminator
     if (output == NULL)
     {
-        return NULL; // Memory allocation failed
+        return "memoryfailed"; // Memory allocation failed
     }
 
     for (size_t i = 0, j = 0; i < input_length;)
@@ -70,12 +70,15 @@ int authenticate_request(const char auth_header[])
     {
         return 0;
     }
+    else if(strcmp(decoded_credentials, "memoryfailed") == 0)
+    {
+        return 2;
+    }
 
     FILE *file = fopen(USERS_FILE, "r");
     if (!file)
     {
-        perror("Could not open users file");
-        return 0;
+        return 3;
     }
 
     char line[256];
@@ -86,7 +89,6 @@ int authenticate_request(const char auth_header[])
         if (strcmp(decoded_credentials, line) == 0)
         {
             authenticated = 1;
-            printf("User authenticated\n"); 
             break;
         }
     }
