@@ -3,9 +3,7 @@ import socket
 import webbrowser
 import os
 import base64
-
 import platform
-
 import subprocess
 from urllib.parse import urlparse
 
@@ -89,7 +87,7 @@ def send_request_via_socket(host, port, raw_request):
         return f"An error occurred: {e}"
 
 
-def open_in_default_app(path):
+def     open_in_default_app(path):
     if not path or len(path) == 0:
         print("Invalid file or URL.")
         return
