@@ -42,7 +42,7 @@ void enqueue(ClientQueue *q, int client_fd, char client_ip[], int client_port)
     q->rear = (q->rear + 1) % q->size;
 
     char log_message[64];
-    sprintf(log_message, "Client %s:%d has been added to the queue.", client_ip,client_port);
+    sprintf(log_message, "Client %s:%d -> Added to the queue.", client_ip,client_port);
     log_statement(log_message);
 
     sem_post(&q->mutex);
@@ -62,7 +62,7 @@ Client_details* dequeue(ClientQueue *q)
     q->front = (q->front + 1) % q->size;
 
     char log_message[64];
-    sprintf(log_message, "Client %s:%d has been removed from the queue.", client->client_ip, client->client_port);
+    sprintf(log_message, "Client %s:%d -> Removed from the queue.", client->client_ip, client->client_port);
     log_statement(log_message);
 
     sem_post(&q->mutex);
@@ -87,7 +87,7 @@ void handle_client(Client_details* client)
     handle_request(client->client_fd, buffer, client->client_ip, client->client_port);
 
     char log_message[128];
-    sprintf(log_message, "Request from %s:%d has been handled. Closing client socket...", client->client_ip, client->client_port);    
+    sprintf(log_message, "Client %s:%d -> Request has been handled. Closing client socket...", client->client_ip, client->client_port);    
     close(client->client_fd);
     free(client);
     client = NULL;
@@ -122,10 +122,14 @@ void shut_down(int signal)
 void start_server(ServerConfig *config)
 {
     signal(SIGINT, shut_down);
+    char log_message[64];
    
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0)
     {
+        bzero(log_message, 64);
+        sprintf(log_message,"socket failed");
+        log_statement(log_message);
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
@@ -134,6 +138,9 @@ void start_server(ServerConfig *config)
     // Allows reuse of the port
     int opt = 1;
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
+        bzero(log_message, 64);
+        sprintf(log_message,"setsockopt failed");
+        log_statement(log_message);
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
@@ -143,6 +150,9 @@ void start_server(ServerConfig *config)
     address.sin_family = AF_INET;
     if(inet_pton(AF_INET, config->address, &address.sin_addr) <= 0)
     {
+        bzero(log_message, 64);
+        sprintf(log_message,"inet_pton failed");
+        log_statement(log_message);
         perror("inet_pton failed");
         close(server_fd);
         exit(EXIT_FAILURE);
@@ -151,17 +161,22 @@ void start_server(ServerConfig *config)
 
     if(bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
+        bzero(log_message, 64);
+        sprintf(log_message,"bind failed");
+        log_statement(log_message);
         perror("bind failed");
         close(server_fd);
         exit(EXIT_FAILURE);
     }
 
-    char log_message[64];
     sprintf(log_message, "Server started on %s:%d", config->address, config->port);
     log_statement(log_message);
 
     if(listen(server_fd, 10) < 0)
     {
+        bzero(log_message, 64);
+        sprintf(log_message,"listen failed");
+        log_statement(log_message);
         perror("listen failed");
         close(server_fd);
         exit(EXIT_FAILURE);
@@ -175,7 +190,7 @@ void start_server(ServerConfig *config)
         pthread_create(&thread_pool[i], NULL, worker_thread, NULL);
     }
 
-    BZERO(log_message, 64);
+    bzero(log_message, 64);
     sprintf(log_message, "Thread pool has been created with %d threads.", config->max_threads);
     log_statement(log_message);
 
@@ -187,6 +202,9 @@ void start_server(ServerConfig *config)
 
         if (client_fd < 0)
         {
+            bzero(log_message, 64);
+            sprintf(log_message,"accept failed");
+            log_statement(log_message);
             perror("accept failed");
             close(server_fd);
             exit(EXIT_FAILURE);

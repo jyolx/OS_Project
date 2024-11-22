@@ -4,18 +4,16 @@
 
 int main(int argc, char *argv[])
 {
-    // Load configuration
+    init_logger("logs/server.log");
+
     ServerConfig config;
     if (load_config("config/server.conf", &config) != 0)
     {
         fprintf(stderr, "Failed to load configuration file.\n");
         return 1;
     }
+    log_statement("Configuration file loaded successfully.");
 
-    // Initialize logger
-    init_logger("logs/server.log");
-
-    // Start server
     start_server(&config);
 
     return 0;

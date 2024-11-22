@@ -15,7 +15,7 @@ int load_config(const char *filename, ServerConfig *config)
             continue;
         if (sscanf(line, "network=%s", config->address) == 1)
             continue;
-        if (sscanf(line, "max_threads=%d", &config->max_threads) == 1)
+        if (sscanf(line, "max_thread=%d", &config->max_threads) == 1)
             continue;
         if (sscanf(line, "document_root=%s", config->document_root) == 1)
             continue;

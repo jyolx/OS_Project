@@ -1,29 +1,51 @@
-[Thu Nov 21 22:42:47 2024] - Logger initialized
-[Thu Nov 21 22:42:47 2024] - Server started on 127.0.0.1:8080
-[Thu Nov 21 22:43:43 2024] - Accepted connection from 127.0.0.1:37232
-[Thu Nov 21 22:43:43 2024] - Client 127.0.0.1:37232 has been added to the queue.
-[Thu Nov 21 22:43:43 2024] - Client 127.0.0.1:37232 has been removed from the queue.
-[Thu Nov 21 22:46:49 2024] - Accepted connection from 127.0.0.1:54306
-[Thu Nov 21 22:46:49 2024] - Client 127.0.0.1:54306 has been added to the queue.
-[Thu Nov 21 22:46:49 2024] - Client 127.0.0.1:54306 has been removed from the queue.
-[Thu Nov 21 22:47:31 2024] - Accepted connection from 127.0.0.1:33438
-[Thu Nov 21 22:47:31 2024] - Client 127.0.0.1:33438 has been added to the queue.
-[Thu Nov 21 22:47:31 2024] - Client 127.0.0.1:33438 has been removed from the queue.
-[Thu Nov 21 22:48:34 2024] - Accepted connection from 127.0.0.1:35210
-[Thu Nov 21 22:48:34 2024] - Client 127.0.0.1:35210 has been added to the queue.
-[Thu Nov 21 22:48:34 2024] - Client 127.0.0.1:35210 has been removed from the queue.
-[Thu Nov 21 22:52:30 2024] - Accepted connection from 127.0.0.1:43242
-[Thu Nov 21 22:52:30 2024] - Client 127.0.0.1:43242 has been added to the queue.
-[Thu Nov 21 22:52:30 2024] - Client 127.0.0.1:43242 has been removed from the queue.
-[Thu Nov 21 23:00:44 2024] - Accepted connection from 127.0.0.1:37210
-[Thu Nov 21 23:00:44 2024] - Client 127.0.0.1:37210 has been added to the queue.
-[Thu Nov 21 23:00:44 2024] - Client 127.0.0.1:37210 has been removed from the queue.
-[Thu Nov 21 23:01:29 2024] - Accepted connection from 127.0.0.1:35528
-[Thu Nov 21 23:01:29 2024] - Client 127.0.0.1:35528 has been added to the queue.
-[Thu Nov 21 23:01:29 2024] - Client 127.0.0.1:35528 has been removed from the queue.
-[Thu Nov 21 23:02:10 2024] - Accepted connection from 127.0.0.1:52024
-[Thu Nov 21 23:02:10 2024] - Client 127.0.0.1:52024 has been added to the queue.
-[Thu Nov 21 23:02:10 2024] - Client 127.0.0.1:52024 has been removed from the queue.
-[Thu Nov 21 23:24:00 2024] - Received signal to shut down server...
-[Thu Nov 21 23:24:00 2024] - Queue has been destroyed.
-[Thu Nov 21 23:24:00 2024] - Server has been shut down.
+[Fri Nov 22 20:25:35 2024] - Logger initialized
+[Fri Nov 22 20:25:35 2024] - Configuration file loaded successfully.
+[Fri Nov 22 20:25:35 2024] - Server started on 127.0.0.1:8080
+[Fri Nov 22 20:25:35 2024] - Queue has been initialized.
+[Fri Nov 22 20:25:35 2024] - Thread pool has been created with 10 threads.
+[Fri Nov 22 20:26:07 2024] - Accepted connection from 127.0.0.1:32904
+[Fri Nov 22 20:26:07 2024] - Client 127.0.0.1:32904 -> Added to the queue.
+[Fri Nov 22 20:26:07 2024] - Client 127.0.0.1:32904 -> Removed from the queue.
+[Fri Nov 22 20:26:07 2024] - Client 127.0.0.1:32904 -> Invalid credentials...authorization failed
+[Fri Nov 22 20:26:24 2024] - Accepted connection from 127.0.0.1:47564
+[Fri Nov 22 20:26:24 2024] - Client 127.0.0.1:47564 -> Added to the queue.
+[Fri Nov 22 20:26:24 2024] - Client 127.0.0.1:47564 -> Removed from the queue.
+[Fri Nov 22 20:26:24 2024] - Client 127.0.0.1:47564 -> Resource deleted: data/secure/hi.txt
+[Fri Nov 22 20:28:34 2024] - Accepted connection from 127.0.0.1:33848
+[Fri Nov 22 20:28:34 2024] - Client 127.0.0.1:33848 -> Added to the queue.
+[Fri Nov 22 20:28:34 2024] - Client 127.0.0.1:33848 -> Removed from the queue.
+[Fri Nov 22 20:28:34 2024] - Client 127.0.0.1:33848 -> POST : data/
+[Fri Nov 22 20:28:34 2024] - Client 127.0.0.1:33848 -> Unable to write to file: data/
+[Fri Nov 22 20:28:55 2024] - Accepted connection from 127.0.0.1:42908
+[Fri Nov 22 20:28:55 2024] - Client 127.0.0.1:42908 -> Added to the queue.
+[Fri Nov 22 20:28:55 2024] - Client 127.0.0.1:42908 -> Removed from the queue.
+[Fri Nov 22 20:28:55 2024] - Client 127.0.0.1:42908 -> POST : data/application
+[Fri Nov 22 20:28:55 2024] - Client 127.0.0.1:42908 -> Resource created: data/application
+[Fri Nov 22 20:29:14 2024] - Accepted connection from 127.0.0.1:53364
+[Fri Nov 22 20:29:14 2024] - Client 127.0.0.1:53364 -> Added to the queue.
+[Fri Nov 22 20:29:14 2024] - Client 127.0.0.1:53364 -> Removed from the queue.
+[Fri Nov 22 20:29:14 2024] - Client 127.0.0.1:53364 -> POST : data/application.json
+[Fri Nov 22 20:29:14 2024] - Client 127.0.0.1:53364 -> Resource created: data/application.json
+[Fri Nov 22 20:32:35 2024] - Accepted connection from 127.0.0.1:58432
+[Fri Nov 22 20:32:35 2024] - Client 127.0.0.1:58432 -> Added to the queue.
+[Fri Nov 22 20:32:35 2024] - Client 127.0.0.1:58432 -> Removed from the queue.
+[Fri Nov 22 20:32:35 2024] - Client 127.0.0.1:58432 -> GET : data/index.html
+[Fri Nov 22 20:32:35 2024] - Client 127.0.0.1:58432 -> sending file data/index.html
+[Fri Nov 22 20:33:21 2024] - Accepted connection from 127.0.0.1:59682
+[Fri Nov 22 20:33:21 2024] - Client 127.0.0.1:59682 -> Added to the queue.
+[Fri Nov 22 20:33:21 2024] - Client 127.0.0.1:59682 -> Removed from the queue.
+[Fri Nov 22 20:33:21 2024] - Client 127.0.0.1:59682 -> GET : data/test.jpg
+[Fri Nov 22 20:33:21 2024] - Client 127.0.0.1:59682 -> sending file data/test.jpg
+[Fri Nov 22 20:35:59 2024] - Accepted connection from 127.0.0.1:39210
+[Fri Nov 22 20:35:59 2024] - Client 127.0.0.1:39210 -> Added to the queue.
+[Fri Nov 22 20:35:59 2024] - Client 127.0.0.1:39210 -> Removed from the queue.
+[Fri Nov 22 20:35:59 2024] - Client 127.0.0.1:39210 -> PUT : data/
+[Fri Nov 22 20:35:59 2024] - Client 127.0.0.1:39210 -> Unable to write to file: data/
+[Fri Nov 22 20:36:40 2024] - Accepted connection from 127.0.0.1:60616
+[Fri Nov 22 20:36:40 2024] - Client 127.0.0.1:60616 -> Added to the queue.
+[Fri Nov 22 20:36:40 2024] - Client 127.0.0.1:60616 -> Removed from the queue.
+[Fri Nov 22 20:36:40 2024] - Client 127.0.0.1:60616 -> PUT : data/hi.txt
+[Fri Nov 22 20:36:40 2024] - Client 127.0.0.1:60616 -> Resource updated: data/hi.txt
+[Fri Nov 22 20:37:06 2024] - Received signal to shut down server...
+[Fri Nov 22 20:37:06 2024] - Queue has been destroyed.
+[Fri Nov 22 20:37:06 2024] - Server has been shut down.
