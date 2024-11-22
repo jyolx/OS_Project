@@ -122,7 +122,10 @@ We developed a multi-threaded web server capable of handling up to 10 client req
 ## Folders and their purpose
 
 ### i. Client
-- Contains sample client python code to simulate client requests.
+- Contains sample client python code in `client.py` to simulate client requests.
+
+- Run `clean.sh` to clear the previously stored data received from the server.
+- A `data` directory gets created to store the data requested by the client.
 
 ### ii. Server
 
@@ -170,7 +173,7 @@ We developed a multi-threaded web server capable of handling up to 10 client req
     - `main.c` : Root of the server.
 
 
-## Functionalities
+## Functionalities (with `curl` commands)
 
 - ### Serves Static Files
 
@@ -178,13 +181,39 @@ We developed a multi-threaded web server capable of handling up to 10 client req
 
 - ### Supports different HTTP Methods
   - `GET` : used by clients to retrieve data from the server.
+    ```bash 
+    $ curl http://localhost:8080/index.html
+    ```
+    <img src="images/get.png" alt="get" width="500">
+    <img src="images/get_log.png" alt="get log" width="600">
+
+    <img src="images/get_output.png" alt="get output" width="300">
 
   - `POST` : used by clients to send data to the server.
+    ```bash 
+    $ curl -X POST http://localhost:8080/application.json -H "Content-Type: application/json" -d '{"name": "Jane Smith", "email": "jane.smith@example.com"}'
+      ```
+    <img src="images/post.png" alt="400" width="500">
+    <img src="images/post_log.png" alt="400 log" width="600">
+
   - `PUT` : used to update an existing resource or create a new resource if it does not already exist.
+    ```bash 
+    $ curl -X PUT http://localhost:8080/test.txt -H "Content-Type: text/plain" -T data/test.txt
+    ```
+    <img src="images/put.png" alt="400" width="500">
+    <img src="images/put_log.png" alt="400 log" width="600">
+
   - `DELETE` : used to remove a resource from the server.
+    ```bash 
+    $ curl -X DELETE http://localhost:8080/pic1.jpg
+    ```
+    <img src="images/delete.png" alt="400" width="500">
+    <img src="images/delete_log.png" alt="400 log" width="600">
 
 - ### Logging Requests
   - The server logs each client request and its response in the `server/logs/server.log` file, helping monitor activity and troubleshoot issues.
+
+    <img src="images/initialized_server.png" alt="400" width="600">
 
 - ### Handles Multiple Content Types
   - The server can serve various types of content (e.g., images, text, HTML, audio) based on the request type. The content is served from the `server/data` folder.
@@ -193,10 +222,33 @@ We developed a multi-threaded web server capable of handling up to 10 client req
   - The server includes error handling mechanisms and returns appropriate HTTP error responses which include : 
 
     - `400 : Bad Request`
+      ```bash 
+      $ curl -X HEAD http://localhost:8080/hi.txt
+      ```
+      <img src="images/400.png" alt="400" width="500">
+      <img src="images/400_log.png" alt="400 log" width="600">
 
     - `401 : Unauthorized`
+      ```bash 
+      $ curl -u username:wrongpassword http://localhost:8080/secure/audio1.mp3
+      ```
+      <img src="images/401.png" alt="401" width="500">
+      <img src="images/401_log.png" alt="401 log" width="600">
+
     - `404: Not Found`
+      ```bash 
+      $ curl -u http://localhost:8080/hi.txt
+      ```
+      <img src="images/404.png" alt="404" width="500">
+      <img src="images/404_log.png" alt="404 log" width="600">
+
     - `500 : Internal Server Error`
+      ```bash 
+      $ curl -u username:password http://localhost:8080/secure/pic3.jpeg
+      ```
+      <img src="images/500.png" alt="500" width="500">
+      <img src="images/500_log.png" alt="500 log" width="600">
+
   - On the other hand, it returns `200 : OK` which tells us that the client request has been handled successfully.
 
 - ### Thread Pooling
@@ -211,6 +263,17 @@ We developed a multi-threaded web server capable of handling up to 10 client req
 
 - ### Basic Authentication
   - The server requires authentication for certain resources stored in the `server/data/secure` folder. Clients must provide valid credentials (defined in `server/config/users.txt`) before being granted access to these resources.
+
+    ```bash
+    $ curl -u username:password http://localhost:8080/secure/audio1.mp3
+    ```
+    <img src="images/auth.png" alt="Authentication" width="500">
+    <img src="images/auth_log.png" alt="Authentication log" width="600">
+
+- ### Server Shutdown
+  - Signal handling is used for the graceful shutdown of the server. After raising `SIGINT` with `Ctrl-C`, the server deallocates the queue and closes the socket file descriptor.
+
+    <img src="images/server_shutdown.png" alt="Server shutdown" width="600">
 
 ## 5. Contributors
 <a href="https://github.com/jyolx/OS_Project/graphs/contributors">
